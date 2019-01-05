@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.Python
+*.egg-info
+build/
+dist/
+.pytest_cache
+venv/
+
+# Sqlite db
+src/data/webhook.db
+
+# Codecov
+.coverage
+coverage.xml
+
+# Mac
+.DS_Store

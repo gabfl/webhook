@@ -1,0 +1,17 @@
+{% include "header.html" %}
+
+<h4>Error 404</h4>
+
+<div class="alert alert-danger" role="alert">
+    This route does not exists.<br /><br />
+
+    This is probably due to one of the following reasons:
+    <p>
+        <ul>
+            <li>The route has expired. Webhook routes are ephemerous and typically expire after 7 days.</li>
+            <li>The link is incorrect. Please verify the link you are using.</li>
+        </ul>
+    </p>
+</div>
+
+{% include "footer.html" %}

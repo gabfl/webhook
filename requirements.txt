@@ -1,0 +1,4 @@
+flask
+flask_sqlalchemy
+Jinja2
+dateparser

@@ -1,0 +1,99 @@
+{% include "header.html" %}
+
+<div class="input-group mb-3" style="margin-top: 6px;">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Current route</span>
+    </div>
+    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ host_url }}{{ route_path }}">
+</div>
+
+{% if callbacks %}
+    <div class="alert alert-primary" role="alert">
+            Webhook example:
+
+            <pre><code>
+curl -X POST {{ host_url }}{{ route_path }} \
+-H "X-MyHeader: 123" \
+-d '{"hello": "world", "is_true": true}'
+</code></pre>
+        </div>
+        
+    {% for callback in callbacks %}
+        <div class="border border-info" style="padding: 6px; margin-bottom: 4px;">
+            <h5>{{ callback.date.strftime('%B %d, %Y %I:%M:%S %Z') }}</h5>
+
+            <table class="table table-sm">
+                <tbody>
+                        <tr>
+                            <td>Method</td>
+                            <td>{{ callback.method }}</td>
+                        </tr>
+                        <tr>
+                            <td>Date</td>
+                            <td>{{ callback.date.strftime('%B %d, %Y %I:%M:%S %Z') }}</td>
+                        </tr>
+                        {% if callback.referrer %}
+                            <tr>
+                                <td>Referrer</td>
+                                <td><a href="{{ callback.referrer }}" target="_blank">{{ callback.referrer }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if callback.remote_addr %}
+                            <tr>
+                                <td>IP</td>
+                                <td>{{ callback.remote_addr }}</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td>Headers</td>
+                            <td>
+                                <table class="table table-striped table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for header in callback.headers %}
+                                        <tr>
+                                            <td>{{ header[0] }}</td>
+                                            <td>{{ header[1] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Body</td>
+                            <td>
+                                {% if callback.body %}
+                                    <pre><code>{{ callback.body }}</code></pre>
+                                {% else %}
+                                    <span style="font-style: italic;">empty!</span>
+                                {% endif %}
+                                </td>
+                        </tr>
+                        <tr>
+                            <td>Body size</td>
+                            <td><pre><code>{{ callback.body|length }}</code></pre></td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-primary" role="alert">
+        No callbacks yet!<br />
+        Try a payload and refresh this page:
+
+        <pre><code>
+curl -X POST {{ host_url }}{{ route_path }} \
+-H "X-MyHeader: 123" \
+-d '{"hello": "world", "is_true": true}'
+</code></pre>
+    </div>
+{% endif %}
+
+{% include "footer.html" %}

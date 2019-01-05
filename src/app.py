@@ -28,7 +28,7 @@ def new():
     return redirect('/' + new_route + '/inspect')
 
 
-@app.route('/<path:path>', methods=['GET', 'POST'])
+@app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def catch_all(path):
     # Get route
     route_path = path

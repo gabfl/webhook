@@ -4,7 +4,7 @@ python:
 before_install:
   - sudo apt-get update
   - pip install pycodestyle codecov
-  - pip3 install -r requirements.txt
+  - pip install -r requirements.txt
 script:
   - pycodestyle --exclude=venv --ignore=E501 .
   - pytest

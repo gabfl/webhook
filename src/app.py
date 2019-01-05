@@ -3,10 +3,10 @@ import json
 from flask import Flask, render_template, request
 from flask import Flask, redirect, url_for
 
-from bootstrap import get_or_create_app
-import callback_handler
-import routes_handler
-from models import db, RouteModel, CallbackModel
+from .bootstrap import get_or_create_app
+from . import callback_handler
+from . import routes_handler
+from .models import db, RouteModel, CallbackModel
 
 
 app = get_or_create_app()

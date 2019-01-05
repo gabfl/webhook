@@ -4,7 +4,7 @@ from flask import Flask
 from flask import current_app as app
 from flask_sqlalchemy import SQLAlchemy
 
-from bootstrap import get_or_create_app
+from .bootstrap import get_or_create_app
 
 app = get_or_create_app()
 

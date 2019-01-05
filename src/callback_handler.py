@@ -2,8 +2,8 @@ import json
 
 from flask import request
 
-from bootstrap import get_or_create_app
-from models import db, CallbackModel
+from .bootstrap import get_or_create_app
+from .models import db, CallbackModel
 
 
 app = get_or_create_app()

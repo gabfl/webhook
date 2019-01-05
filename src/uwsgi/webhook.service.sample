@@ -1,0 +1,13 @@
+[Unit]
+Description="uWSGI server instance for webhook"
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/html/webhook/src/
+Environment=FLASK_ENV=production
+ExecStart=/var/www/html/webhook/venv/bin/uwsgi --ini /var/www/html/webhook/src/app.ini
+
+[Install]
+WantedBy=multi-user.target

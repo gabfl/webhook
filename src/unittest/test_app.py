@@ -23,6 +23,11 @@ class Test(unittest.TestCase):
         rv = self.client.get('/')
         assert rv.status_code == 200
 
+    def test_robots_txt(self):
+        rv = self.client.get('robots.txt')
+        assert rv.status_code == 200
+        assert b'User-Agent' in rv.data
+
     def test_new(self):
         rv = self.client.get('/new')
         assert rv.status_code == 307

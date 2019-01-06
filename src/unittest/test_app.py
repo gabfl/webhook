@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
     def test_new(self):
         rv = self.client.get('/new')
-        assert rv.status_code == 302
+        assert rv.status_code == 307
 
     def test_new_2(self):
         rv = self.client.get('/new', follow_redirects=True)
@@ -68,7 +68,7 @@ class Test(unittest.TestCase):
         # Generate a new path
         path = routes_handler.new()
 
-        rv = self.client.delete('/' + path + '/inspect')
+        rv = self.client.get('/' + path + '/inspect')
         assert rv.status_code == 200
         assert b'Current route' in rv.data
 
@@ -82,7 +82,7 @@ class Test(unittest.TestCase):
             'find_me': 'looking for this string'
         })
 
-        rv = self.client.delete('/' + path + '/inspect')
+        rv = self.client.get('/' + path + '/inspect')
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
@@ -94,17 +94,16 @@ class Test(unittest.TestCase):
         # Try sending some data to the webhook URL
         self.client.get('/' + path + '?some_var=looking-for-this-string')
 
-        rv = self.client.delete('/' + path + '/inspect')
+        rv = self.client.get('/' + path + '/inspect', follow_redirects=True)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         # assert b'looking-for-this-string' in rv.data
 
     def test_abort_404(self):
         rv = self.client.get('/some_bad_route')
-        # Should redirect to 404
-        assert rv.status_code == 302
+        # Should be a 307 to redirect to 404
+        assert rv.status_code == 307
 
     def test_abort_404_2(self):
         rv = self.client.get('/404')
-        # Should redirect to 404
         assert rv.status_code == 404

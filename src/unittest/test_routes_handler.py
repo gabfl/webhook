@@ -31,7 +31,6 @@ class Test(unittest.TestCase):
         db.session.commit()
 
     def test_new(self):
-
         route_path = routes_handler.new()
 
         # Lookup route

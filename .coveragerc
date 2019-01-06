@@ -7,6 +7,3 @@ omit =
   src/wsgi.py
   src/unittest/*
   venv/*
-exclude_lines =
-  if __name__ == '__main__':
-  main()

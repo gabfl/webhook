@@ -17,6 +17,11 @@ def hp():
     return render_template('index.html')
 
 
+@app.route("/robots.txt")
+def robots():
+    return render_template('robots.txt')
+
+
 @app.route("/new")
 def new():
     # Cleanup old routes

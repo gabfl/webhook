@@ -139,6 +139,10 @@ class Test(unittest.TestCase):
         assert 'creation_date' in rv.json
         self.assertIsInstance(rv.json['callbacks'], list)
         self.assertIsInstance(rv.json['routes'], dict)
+        self.assertIsInstance(rv.json['routes']['inspect'], dict)
+        self.assertIsInstance(rv.json['routes']['inspect']['html'], str)
+        self.assertIsInstance(rv.json['routes']['inspect']['json'], str)
+        self.assertIsInstance(rv.json['routes']['webhook'], str)
         self.assertIsInstance(rv.json['creation_date'], str)
 
     def test_catch_all_inspect_as_json_with_callbacks_json(self):
@@ -158,6 +162,8 @@ class Test(unittest.TestCase):
         self.assertIsInstance(rv.json['callbacks'], list)
         for callback in rv.json['callbacks']:
             self.assertIsInstance(callback['body'], dict)
+            self.assertIsInstance(callback['body']['data'], dict)
+            self.assertIsInstance(callback['body']['size'], int)
 
     def test_catch_all_inspect_as_json_with_callbacks_get(self):
         # Generate a new path
@@ -173,6 +179,9 @@ class Test(unittest.TestCase):
         self.assertIsInstance(rv.json['callbacks'], list)
         for callback in rv.json['callbacks']:
             self.assertIsInstance(callback['args'], dict)
+            self.assertIsInstance(callback['body'], dict)
+            self.assertIsNone(callback['body']['data'])
+            assert callback['body']['size'] == 0
 
     def test_catch_all_inspect_as_json_with_callbacks_data(self):
         # Generate a new path
@@ -190,7 +199,9 @@ class Test(unittest.TestCase):
         assert 'callbacks' in rv.json
         self.assertIsInstance(rv.json['callbacks'], list)
         for callback in rv.json['callbacks']:
-            self.assertIsInstance(callback['body'], str)
+            self.assertIsInstance(callback['body'], dict)
+            self.assertIsInstance(callback['body']['data'], str)
+            self.assertIsInstance(callback['body']['size'], int)
 
     def test_abort_404(self):
         rv = self.client.get('/some_bad_route')

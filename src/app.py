@@ -67,10 +67,12 @@ def catch_all(path):
         callbacks_processed = []
         for callback in callbacks:
             # Prepare body
-            body = callback.body if callback.body else None
-            body_size = len(body) if body else 0
-            if body and callback_handler.is_json(body):
-                body = json.loads(body)
+            body = {
+                'data': callback.body if callback.body else None,
+                'size': len(callback.body) if callback.body else 0
+            }
+            if body['data'] and callback_handler.is_json(body['data']):
+                body['data'] = json.loads(body['data'])
 
             # Prepare args
             args = None
@@ -83,7 +85,6 @@ def catch_all(path):
                     'method': callback.method,
                     'args': args,
                     'body': body,
-                    'body_size': body_size,
                     'date': callback.date,
                     'referrer': callback.referrer,
                     'remote_addr': callback.remote_addr
@@ -93,7 +94,10 @@ def catch_all(path):
         if inspect_json:  # Json format
             return jsonify({
                 'routes': {
-                    'inspect': request.host_url + route_path + '/inspect',
+                    'inspect': {
+                        'html': request.host_url + route_path + '/inspect',
+                        'json': request.host_url + route_path + '/inspect/json'
+                    },
                     'webhook': request.host_url + route_path
                 },
                 'callbacks': callbacks_processed,

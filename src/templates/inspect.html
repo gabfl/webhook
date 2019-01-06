@@ -94,8 +94,8 @@ curl -X POST {{ host_url }}{{ route_path }} \
                         <tr>
                             <td>Body</td>
                             <td>
-                                {% if callback.body %}
-                                    <pre><code id="body-{{  rowloop.index }}">{{ callback.body }}</code></pre>
+                                {% if callback.body['data'] %}
+                                    <pre><code id="body-{{  rowloop.index }}">{{ callback.body['data'] }}</code></pre>
                                 {% else %}
                                     <span style="font-style: italic;">empty!</span>
                                 {% endif %}
@@ -103,16 +103,16 @@ curl -X POST {{ host_url }}{{ route_path }} \
                         </tr>
                         <tr>
                             <td>Body size</td>
-                            <td><pre><code>{{ callback.body_size }}</code></pre></td>
+                            <td><pre><code>{{ callback.body['size'] }}</code></pre></td>
                         </tr>
                 </tbody>
             </table>
         </div>
 
 
-        {% if callback.body and callback.body is mapping %}
+        {% if callback.body['data'] and callback.body['data'] is mapping %}
             <script>
-                var obj = {{ callback.body | tojson }};
+                var obj = {{ callback.body['data'] | tojson }};
                 var myJSON = JSON.stringify(obj, null, 2);
 
                 document.getElementById("body-{{  rowloop.index }}").innerHTML = myJSON;

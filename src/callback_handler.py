@@ -52,5 +52,5 @@ def is_json(data):
         json.loads(data)
 
         return True
-    except json.decoder.JSONDecodeError:
+    except Exception:
         return False

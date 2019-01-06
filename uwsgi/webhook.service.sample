@@ -5,9 +5,9 @@ After=network.target
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/var/www/html/webhook/src/
+WorkingDirectory=/var/www/html/webhook/
 Environment=FLASK_ENV=production
-ExecStart=/var/www/html/webhook/venv/bin/uwsgi --ini /var/www/html/webhook/src/app.ini
+ExecStart=/var/www/html/webhook/venv/bin/uwsgi --ini /var/www/html/webhook/app.ini
 
 [Install]
 WantedBy=multi-user.target

@@ -11,6 +11,9 @@ venv/
 # Sqlite db
 src/data/webhook.db
 
+# wsgi socker
+webhook.sock
+
 # Codecov
 .coverage
 coverage.xml

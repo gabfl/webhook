@@ -20,6 +20,8 @@ curl -X POST {{ host_url }}{{ route_path }} \
         </div>
         
     {% for callback in callbacks %}
+        {% set rowloop = loop %}
+
         <div class="border border-info" style="padding: 6px; margin-bottom: 4px;">
             <h5>{{ callback.date.strftime('%B %d, %Y %I:%M:%S %p') }}</h5>
 
@@ -93,7 +95,7 @@ curl -X POST {{ host_url }}{{ route_path }} \
                             <td>Body</td>
                             <td>
                                 {% if callback.body %}
-                                    <pre><code>{{ callback.body }}</code></pre>
+                                    <pre><code id="body-{{  rowloop.index }}">{{ callback.body }}</code></pre>
                                 {% else %}
                                     <span style="font-style: italic;">empty!</span>
                                 {% endif %}
@@ -106,6 +108,16 @@ curl -X POST {{ host_url }}{{ route_path }} \
                 </tbody>
             </table>
         </div>
+
+
+        {% if callback.body and callback.body is mapping %}
+            <script>
+                var obj = {{ callback.body | tojson }};
+                var myJSON = JSON.stringify(obj, null, 2);
+
+                document.getElementById("body-{{  rowloop.index }}").innerHTML = myJSON;
+            </script>
+        {% endif %}
     {% endfor %}
 {% else %}
     <div class="alert alert-primary" role="alert">

@@ -67,7 +67,7 @@ def catch_all(path):
         callbacks_processed = []
         for callback in callbacks:
             # Prepare body
-            body = callback.body
+            body = callback.body if callback.body else None
             body_size = len(body) if body else 0
             if body and callback_handler.is_json(body):
                 body = json.loads(body)

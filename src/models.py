@@ -28,7 +28,6 @@ class CallbackModel(db.Model):
     route_id = db.Column(db.Integer, db.ForeignKey(RouteModel.id))
     headers = db.Column(db.Text)
     method = db.Column(db.String(12))
-    post = db.Column(db.Text())
     args = db.Column(db.Text())
     body = db.Column(db.Text())
     date = db.Column(

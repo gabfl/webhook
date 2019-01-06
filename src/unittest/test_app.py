@@ -87,17 +87,32 @@ class Test(unittest.TestCase):
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
 
-    def test_catch_all_inspect_with_callbacks_not_json(self):
+    def test_catch_all_inspect_with_callbacks_get(self):
         # Generate a new path
         path = routes_handler.new()
 
         # Try sending some data to the webhook URL
         self.client.get('/' + path + '?some_var=looking-for-this-string')
 
-        rv = self.client.get('/' + path + '/inspect', follow_redirects=True)
+        rv = self.client.get('/' + path + '/inspect')
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         # assert b'looking-for-this-string' in rv.data
+
+    def test_catch_all_inspect_with_callbacks_data(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        # Try sending some data to the webhook URL
+        self.client.post('/' + path, data=dict(
+            hello='a',
+            find_me='looking for this string'
+        ))
+
+        rv = self.client.get('/' + path + '/inspect')
+        assert rv.status_code == 200
+        assert b'Current route' in rv.data
+        assert b'looking+for+this+string' in rv.data
 
     def test_abort_404(self):
         rv = self.client.get('/some_bad_route')

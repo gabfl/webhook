@@ -62,7 +62,6 @@ def catch_all(path):
                 {
                     'headers': json.loads(callback.headers),
                     'method': callback.method,
-                    'post': callback.post,
                     'args': callback.args,
                     'body': body,
                     # 'body_is_json': callback_handler.is_json(callback.body),

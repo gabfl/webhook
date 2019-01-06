@@ -3,8 +3,8 @@ Description="uWSGI server instance for webhook"
 After=network.target
 
 [Service]
-User=gab
-Group=gab
+User=www-data
+Group=www-data
 WorkingDirectory=/var/www/html/webhook/
 Environment=FLASK_ENV=production
 ExecStart=/var/www/html/webhook/venv/bin/uwsgi --ini /var/www/html/webhook/app.ini

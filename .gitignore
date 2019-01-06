@@ -12,7 +12,7 @@ venv/
 src/data/webhook.db
 
 # wsgi socker
-webhook.sock
+socket/webhook.sock
 
 # Codecov
 .coverage

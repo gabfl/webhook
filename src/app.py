@@ -1,8 +1,7 @@
 import json
 import os
 
-from flask import Flask, render_template, request
-from flask import Flask, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 
 from .bootstrap import get_or_create_app
 from . import callback_handler
@@ -49,6 +48,7 @@ def catch_all(path):
     # If we are inspecting a route
     inspect = route_path.rfind('/inspect')
     if inspect > 0:
+        inspect_json = True if route_path.rfind('/inspect/json') > 0 else False
         route_path = route_path[:inspect]
 
     # Lookup route
@@ -68,7 +68,8 @@ def catch_all(path):
         for callback in callbacks:
             # Prepare body
             body = callback.body
-            if callback_handler.is_json(body):
+            body_size = len(body) if body else 0
+            if body and callback_handler.is_json(body):
                 body = json.loads(body)
 
             # Prepare args
@@ -82,19 +83,29 @@ def catch_all(path):
                     'method': callback.method,
                     'args': args,
                     'body': body,
-                    # 'body_is_json': callback_handler.is_json(callback.body),
+                    'body_size': body_size,
                     'date': callback.date,
                     'referrer': callback.referrer,
                     'remote_addr': callback.remote_addr
                 }
             )
 
-        return render_template(
-            'inspect.html',
-            route_path=route_path,
-            callbacks=callbacks_processed,
-            host_url=request.host_url
-        )
+        if inspect_json:  # Json forma
+            return jsonify({
+                'routes': {
+                    'inspect': request.host_url + route_path + '/inspect',
+                    'webhook': request.host_url + route_path
+                },
+                'callbacks': callbacks_processed,
+                'creation_date': route.creation_date
+            })
+        else:  # HTML rendering
+            return render_template(
+                'inspect.html',
+                route_path=route_path,
+                callbacks=callbacks_processed,
+                host_url=request.host_url
+            )
     else:
         # Save callback
         callback_handler.save(route.id)

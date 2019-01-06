@@ -56,10 +56,10 @@ curl -X POST {{ host_url }}{{ route_path }} \
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for header in callback.headers %}
+                                    {% for key in callback.headers %}
                                         <tr>
-                                            <td>{{ header[0] }}</td>
-                                            <td>{{ header[1] }}</td>
+                                            <td>{{ key }}</td>
+                                            <td>{{ callback.headers[key] }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -101,7 +101,7 @@ curl -X POST {{ host_url }}{{ route_path }} \
                         </tr>
                         <tr>
                             <td>Body size</td>
-                            <td><pre><code>{{ callback.body|length }}</code></pre></td>
+                            <td><pre><code>{{ callback.body_size }}</code></pre></td>
                         </tr>
                 </tbody>
             </table>

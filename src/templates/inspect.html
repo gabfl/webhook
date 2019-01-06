@@ -66,6 +66,29 @@ curl -X POST {{ host_url }}{{ route_path }} \
                                 </table>
                             </td>
                         </tr>
+                        {% if callback.args %}
+                        <tr>
+                            <td>Arguments</td>
+                            <td>
+                                <table class="table table-striped table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Key</th>
+                                        <th scope="col">Value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for key in callback.args %}
+                                        <tr>
+                                            <td>{{ key }}</td>
+                                            <td>{{ callback.args[key] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        {% endif %}
                         <tr>
                             <td>Body</td>
                             <td>

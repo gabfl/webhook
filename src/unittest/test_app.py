@@ -97,7 +97,7 @@ class Test(unittest.TestCase):
         rv = self.client.get('/' + path + '/inspect')
         assert rv.status_code == 200
         assert b'Current route' in rv.data
-        # assert b'looking-for-this-string' in rv.data
+        assert b'looking-for-this-string' in rv.data
 
     def test_catch_all_inspect_with_callbacks_data(self):
         # Generate a new path

@@ -17,7 +17,8 @@ class RouteModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     route = db.Column(db.String(80), unique=True, nullable=False)
     creation_date = db.Column(
-        db.DateTime, nullable=False, default=datetime.now)
+        db.DateTime, nullable=False, default=datetime.now())
+    print(datetime.now().strftime('We are the %d, %b %Y %H:%M'))
 
     def __repr__(self):
         return '<Route %r>' % self.route

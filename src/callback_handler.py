@@ -33,7 +33,7 @@ def save(route_id):
         route_id=route_id,
         headers=json.dumps(get_headers()),
         method=request.method,
-        args=json.dumps(request.args),
+        args=json.dumps(request.args) if request.args else None,
         body=body,
         referrer=request.referrer,
         remote_addr=request.remote_addr

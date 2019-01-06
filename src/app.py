@@ -58,11 +58,16 @@ def catch_all(path):
             if callback_handler.is_json(body):
                 body = json.loads(body)
 
+            # Prepare args
+            args = None
+            if callback.args:
+                args = json.loads(callback.args)
+
             callbacks_processed.append(
                 {
                     'headers': json.loads(callback.headers),
                     'method': callback.method,
-                    'args': callback.args,
+                    'args': args,
                     'body': body,
                     # 'body_is_json': callback_handler.is_json(callback.body),
                     'date': callback.date,

@@ -17,7 +17,7 @@ class RouteModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     route = db.Column(db.String(80), unique=True, nullable=False)
     creation_date = db.Column(
-        db.DateTime, nullable=False, default=datetime.now())
+        db.DateTime, nullable=False, default=datetime.now)
 
     def __repr__(self):
         return '<Route %r>' % self.route
@@ -31,7 +31,7 @@ class CallbackModel(db.Model):
     args = db.Column(db.Text())
     body = db.Column(db.Text())
     date = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow)
+        db.DateTime, nullable=False, default=datetime.now)
     referrer = db.Column(db.Text())
     remote_addr = db.Column(db.String(256))
 

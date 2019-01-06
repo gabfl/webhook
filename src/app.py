@@ -48,7 +48,7 @@ def catch_all(path):
     if inspect > 0:
         # Load callbacks
         callbacks = CallbackModel.query.filter_by(
-            route_id=route.id).order_by(CallbackModel.date.desc()).all()
+            route_id=route.id).order_by(CallbackModel.id.desc()).all()
 
         # Process rows
         callbacks_processed = []

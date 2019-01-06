@@ -22,11 +22,18 @@ class Test(unittest.TestCase):
     def test_hp(self):
         rv = self.client.get('/')
         assert rv.status_code == 200
+        assert 'text/html' in rv.headers['Content-Type']
 
     def test_robots_txt(self):
-        rv = self.client.get('robots.txt')
+        rv = self.client.get('/robots.txt')
         assert rv.status_code == 200
         assert b'User-Agent' in rv.data
+        assert 'text/plain' in rv.headers['Content-Type']
+
+    def test_favicon_ico(self):
+        rv = self.client.get('/favicon.ico')
+        assert rv.status_code == 200
+        assert 'image/x-icon' in rv.headers['Content-Type']
 
     def test_new(self):
         rv = self.client.get('/new')

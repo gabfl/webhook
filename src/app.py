@@ -1,7 +1,8 @@
 import json
+import os
 
 from flask import Flask, render_template, request
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, send_from_directory
 
 from .bootstrap import get_or_create_app
 from . import callback_handler
@@ -19,7 +20,14 @@ def hp():
 
 @app.route("/robots.txt")
 def robots():
-    return render_template('robots.txt')
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'robots.txt', mimetype='text/plain')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/x-icon')
 
 
 @app.route("/new")

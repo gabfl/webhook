@@ -76,7 +76,7 @@ class Test(unittest.TestCase):
         assert rv.status_code == 200
         assert rv.data == b'OK'
 
-    def test_catch_all_inspect(self):
+    def test_catch_all_inspect_as_html(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -84,7 +84,7 @@ class Test(unittest.TestCase):
         assert rv.status_code == 200
         assert b'Current route' in rv.data
 
-    def test_catch_all_inspect_with_callbacks_json(self):
+    def test_catch_all_inspect_as_html_with_callbacks_json(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -99,7 +99,7 @@ class Test(unittest.TestCase):
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
 
-    def test_catch_all_inspect_with_callbacks_get(self):
+    def test_catch_all_inspect_as_html_with_callbacks_get(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -111,7 +111,7 @@ class Test(unittest.TestCase):
         assert b'Current route' in rv.data
         assert b'looking-for-this-string' in rv.data
 
-    def test_catch_all_inspect_with_callbacks_data(self):
+    def test_catch_all_inspect_as_html_with_callbacks_data(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -125,6 +125,72 @@ class Test(unittest.TestCase):
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         assert b'looking+for+this+string' in rv.data
+
+    def test_catch_all_inspect_as_json(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        rv = self.client.get('/' + path + '/inspect/json')
+        assert rv.status_code == 200
+        assert 'application/json' in rv.headers['Content-Type']
+        self.assertIsInstance(rv.json, dict)
+        assert 'callbacks' in rv.json
+        assert 'routes' in rv.json
+        assert 'creation_date' in rv.json
+        self.assertIsInstance(rv.json['callbacks'], list)
+        self.assertIsInstance(rv.json['routes'], dict)
+        self.assertIsInstance(rv.json['creation_date'], str)
+
+    def test_catch_all_inspect_as_json_with_callbacks_json(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        # Try sending some data to the webhook URL
+        self.client.post('/' + path, json={
+            'hello': 'world',
+            'find_me': 'looking for this string'
+        })
+
+        rv = self.client.get('/' + path + '/inspect/json')
+        assert rv.status_code == 200
+        assert 'application/json' in rv.headers['Content-Type']
+        assert 'callbacks' in rv.json
+        self.assertIsInstance(rv.json['callbacks'], list)
+        for callback in rv.json['callbacks']:
+            self.assertIsInstance(callback['body'], dict)
+
+    def test_catch_all_inspect_as_json_with_callbacks_get(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        # Try sending some data to the webhook URL
+        self.client.get('/' + path + '?some_var=looking-for-this-string')
+
+        rv = self.client.get('/' + path + '/inspect/json')
+        assert rv.status_code == 200
+        assert 'application/json' in rv.headers['Content-Type']
+        assert 'callbacks' in rv.json
+        self.assertIsInstance(rv.json['callbacks'], list)
+        for callback in rv.json['callbacks']:
+            self.assertIsInstance(callback['args'], dict)
+
+    def test_catch_all_inspect_as_json_with_callbacks_data(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        # Try sending some data to the webhook URL
+        self.client.post('/' + path, data=dict(
+            hello='a',
+            find_me='looking for this string'
+        ))
+
+        rv = self.client.get('/' + path + '/inspect/json')
+        assert rv.status_code == 200
+        assert 'application/json' in rv.headers['Content-Type']
+        assert 'callbacks' in rv.json
+        self.assertIsInstance(rv.json['callbacks'], list)
+        for callback in rv.json['callbacks']:
+            self.assertIsInstance(callback['body'], str)
 
     def test_abort_404(self):
         rv = self.client.get('/some_bad_route')

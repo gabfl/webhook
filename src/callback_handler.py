@@ -12,10 +12,10 @@ app = get_or_create_app()
 def get_headers():
     """ Retrieve all headers """
 
-    headers = []
+    headers = {}
 
     for header_name, header_value in request.headers:
-        headers.append([header_name, header_value])
+        headers[header_name] = header_value
 
     return headers
 
@@ -26,7 +26,7 @@ def save(route_id):
     # Optionally dump Json
     body = request.get_data().decode('utf-8')
     if is_json(body):
-        body = json.dumps(body)
+        body = json.dumps(request.get_json())
 
     # Save callback
     callback = CallbackModel(

@@ -22,7 +22,7 @@ curl -X POST {{ host_url }}{{ route_path }} \
     {% for callback in callbacks %}
         {% set rowloop = loop %}
 
-        <div class="border border-info" style="padding: 6px; margin-bottom: 4px;">
+        <div class="border border-info table-responsive" style="padding: 6px; margin-bottom: 4px;">
             <h5>{{ callback.date.strftime('%B %d, %Y %I:%M:%S %p') }}</h5>
 
             <table class="table table-sm">

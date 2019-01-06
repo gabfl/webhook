@@ -4,6 +4,6 @@ source=webhook
 [report]
 omit =
   src/__main__.py
-  src/wsgi.py
+  wsgi.py
   src/unittest/*
   venv/*

@@ -14,6 +14,8 @@ db = SQLAlchemy(app)
 
 
 class RouteModel(db.Model):
+    __tablename__ = 'routes'
+
     id = db.Column(db.Integer, primary_key=True)
     route = db.Column(db.String(80), unique=True, nullable=False)
     creation_date = db.Column(
@@ -24,6 +26,8 @@ class RouteModel(db.Model):
 
 
 class CallbackModel(db.Model):
+    __tablename__ = 'callbacks'
+
     id = db.Column(db.Integer, primary_key=True)
     route_id = db.Column(db.Integer, db.ForeignKey(RouteModel.id))
     headers = db.Column(db.Text)

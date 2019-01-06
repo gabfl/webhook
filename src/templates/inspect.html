@@ -13,6 +13,7 @@
 
             <pre><code>
 curl -X POST {{ host_url }}{{ route_path }} \
+-H "Content-Type: application/json" \
 -H "X-MyHeader: 123" \
 -d '{"hello": "world", "is_true": true}'
 </code></pre>
@@ -90,6 +91,7 @@ curl -X POST {{ host_url }}{{ route_path }} \
 
         <pre><code>
 curl -X POST {{ host_url }}{{ route_path }} \
+-H "Content-Type: application/json" \
 -H "X-MyHeader: 123" \
 -d '{"hello": "world", "is_true": true}'
 </code></pre>

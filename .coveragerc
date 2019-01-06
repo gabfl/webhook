@@ -1,0 +1,9 @@
+[run]
+source=webhook
+
+[report]
+omit =
+  src/__main__.py
+  src/wsgi.py
+  src/unittest/*
+  venv/*

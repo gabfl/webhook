@@ -4,7 +4,7 @@ from flask import Flask
 from flask import current_app as app
 from flask_sqlalchemy import SQLAlchemy
 
-from bootstrap import get_or_create_app
+from .bootstrap import get_or_create_app
 
 app = get_or_create_app()
 
@@ -28,7 +28,6 @@ class CallbackModel(db.Model):
     route_id = db.Column(db.Integer, db.ForeignKey(RouteModel.id))
     headers = db.Column(db.Text)
     method = db.Column(db.String(12))
-    post = db.Column(db.Text())
     args = db.Column(db.Text())
     body = db.Column(db.Text())
     date = db.Column(

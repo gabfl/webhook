@@ -3,10 +3,10 @@ import json
 from flask import Flask, render_template, request
 from flask import Flask, redirect, url_for
 
-from bootstrap import get_or_create_app
-import callback_handler
-import routes_handler
-from models import db, RouteModel, CallbackModel
+from .bootstrap import get_or_create_app
+from . import callback_handler
+from . import routes_handler
+from .models import db, RouteModel, CallbackModel
 
 
 app = get_or_create_app()
@@ -25,28 +25,27 @@ def new():
     # Generate a new route
     new_route = routes_handler.new()
 
-    return redirect('/' + new_route + '/inspect')
+    return redirect('/' + new_route + '/inspect'), 307
 
 
-@app.route('/<path:path>', methods=['GET', 'POST'])
+@app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def catch_all(path):
     # Get route
     route_path = path
 
     # If we are inspecting a route
-    inspect = False
-    if route_path.rfind('/inspect') > 0:
-        inspect = True
-        route_path = route_path.rstrip('/inspect')
+    inspect = route_path.rfind('/inspect')
+    if inspect > 0:
+        route_path = route_path[:inspect]
 
     # Lookup route
     route = RouteModel.query.filter_by(route=route_path).first()
 
     # Return 404 if unknown route
     if not route:
-        return redirect(url_for('abort_404'))
+        return redirect(url_for('abort_404')), 307
 
-    if inspect:
+    if inspect > 0:
         # Load callbacks
         callbacks = CallbackModel.query.filter_by(
             route_id=route.id).order_by(CallbackModel.date.desc()).all()
@@ -63,7 +62,6 @@ def catch_all(path):
                 {
                     'headers': json.loads(callback.headers),
                     'method': callback.method,
-                    'post': callback.post,
                     'args': callback.args,
                     'body': body,
                     # 'body_is_json': callback_handler.is_json(callback.body),
@@ -89,8 +87,3 @@ def catch_all(path):
 @app.route("/404")
 def abort_404():
     return render_template('404.html'), 404
-
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run()

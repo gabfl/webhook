@@ -1,7 +1,7 @@
 import uuid
 from dateparser import parse
 
-from models import db, RouteModel, CallbackModel
+from .models import db, RouteModel, CallbackModel
 
 
 def new():

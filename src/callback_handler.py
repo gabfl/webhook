@@ -2,8 +2,8 @@ import json
 
 from flask import request
 
-from bootstrap import get_or_create_app
-from models import db, CallbackModel
+from .bootstrap import get_or_create_app
+from .models import db, CallbackModel
 
 
 app = get_or_create_app()
@@ -23,14 +23,18 @@ def get_headers():
 def save(route_id):
     """ Save callback """
 
+    # Optionally dump Json
+    body = request.get_data().decode('utf-8')
+    if is_json(body):
+        body = json.dumps(body)
+
     # Save callback
     callback = CallbackModel(
         route_id=route_id,
         headers=json.dumps(get_headers()),
         method=request.method,
-        post=None,
         args=json.dumps(request.args),
-        body=json.dumps(request.get_data().decode('utf-8')),
+        body=body,
         referrer=request.referrer,
         remote_addr=request.remote_addr
     )

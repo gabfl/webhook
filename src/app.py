@@ -90,7 +90,7 @@ def catch_all(path):
                 }
             )
 
-        if inspect_json:  # Json forma
+        if inspect_json:  # Json format
             return jsonify({
                 'routes': {
                     'inspect': request.host_url + route_path + '/inspect',

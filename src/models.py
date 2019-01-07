@@ -17,9 +17,9 @@ class RouteModel(db.Model):
     __tablename__ = 'routes'
 
     id = db.Column(db.Integer, primary_key=True)
-    path = db.Column(db.String(80), unique=True, nullable=False)
+    path = db.Column(db.String(80), unique=True, nullable=False, index=True)
     creation_date = db.Column(
-        db.DateTime, nullable=False, default=datetime.now)
+        db.DateTime, nullable=False, default=datetime.now, index=True)
 
     def __repr__(self):
         return '<Route %r>' % self.path
@@ -29,7 +29,7 @@ class CallbackModel(db.Model):
     __tablename__ = 'callbacks'
 
     id = db.Column(db.Integer, primary_key=True)
-    route_id = db.Column(db.Integer, db.ForeignKey(RouteModel.id))
+    route_id = db.Column(db.Integer, db.ForeignKey(RouteModel.id), index=True)
     headers = db.Column(db.Text, default='{}')
     method = db.Column(db.String(12))
     args = db.Column(db.Text())
@@ -42,7 +42,5 @@ class CallbackModel(db.Model):
     def __repr__(self):
         return '<Callback %r>' % self.id
 
-
-db.Index('route_id', CallbackModel.route_id)
 
 db.create_all()

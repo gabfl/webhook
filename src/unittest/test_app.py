@@ -38,6 +38,16 @@ class Test(unittest.TestCase):
     def test_new(self):
         rv = self.client.get('/new')
         assert rv.status_code == 307
+        assert 'text/html' in rv.headers['Content-Type']
+
+    def test_new_json(self):
+        rv = self.client.get('/new/json')
+        assert rv.status_code == 200
+        assert 'application/json' in rv.headers['Content-Type']
+        self.assertIsInstance(rv.json['routes'], dict)
+        self.assertIsInstance(rv.json['routes']['inspect'], dict)
+        self.assertIsInstance(rv.json['routes']['inspect']['html'], str)
+        self.assertIsInstance(rv.json['routes']['inspect']['json'], str)
 
     def test_new_2(self):
         rv = self.client.get('/new', follow_redirects=True)

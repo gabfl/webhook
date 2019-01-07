@@ -14,7 +14,7 @@ app = get_or_create_app()
 
 @app.route("/")
 def hp():
-    return render_template('index.html')
+    return render_template('index.html', host_url=request.host_url)
 
 
 @app.route("/robots.txt")
@@ -38,6 +38,22 @@ def new():
     new_route = routes_handler.new()
 
     return redirect('/' + new_route + '/inspect'), 307
+
+
+@app.route("/new/json")
+def new_json():
+    # Generate a new route
+    new_route = routes_handler.new()
+
+    return jsonify({
+        'routes': {
+            'inspect': {
+                'html': request.host_url + new_route + '/inspect',
+                'json': request.host_url + new_route + '/inspect/json'
+            },
+            'webhook': request.host_url + new_route
+        },
+    })
 
 
 @app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])

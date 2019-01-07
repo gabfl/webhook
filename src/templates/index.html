@@ -1,17 +1,30 @@
 {% include "header.html" %}
 
 <div style="min-height: 500px;">
-    <p>
-        This free and open source tool allows you to test webhooks and other HTTP requests and log their payloads and attributes.
-    </p>
-    <p>
-        The routes are ephemerous (they are typically deleted after 7 days) and should be treated as is.
-    </p>
-
-    <div style="text-align: center;">
+    <div class="mx-auto" style="width: 600px;">
         <p>
-            <a href="/new"><button type="button" class="btn btn-primary btn-lg">Create a new webhook route</button></a>
+            This free and open source tool allows you to test webhooks and other HTTP requests and log their payloads and attributes.
         </p>
+        <p>
+            The routes are ephemerous (they are typically deleted after 7 days) and should be treated as is.
+        </p>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <p>
+                <a href="/new"><button type="button" class="btn btn-primary btn-lg">Create a new webhook route</button></a>
+            </p>
+
+            <p>
+                or create a route programmatically:
+            </p>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">API</span>
+                </div>
+                <input type="text" class="form-control" aria-describedby="inputGroup-sizing-default" value="curl {{ host_url }}new/json">
+            </div>
+        </div>
     </div>
 </div>
 

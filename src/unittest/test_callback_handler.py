@@ -14,7 +14,7 @@ class Test(unittest.TestCase):
     def test_get_callbacks(self):
 
         # Create 2 routes, one expired
-        self.route = RouteModel(route=str(uuid.uuid4()))
+        self.route = RouteModel(path=str(uuid.uuid4()))
         db.session.add(self.route)
 
         db.session.commit()

@@ -35,23 +35,23 @@ def new():
     routes_handler.cleanup_old_routes()
 
     # Generate a new route
-    new_route = routes_handler.new()
+    route = routes_handler.new()
 
-    return redirect('/' + new_route + '/inspect'), 307
+    return redirect('/' + route.path + '/inspect'), 307
 
 
 @app.route("/new/json")
 def new_json():
     # Generate a new route
-    new_route = routes_handler.new()
+    route = routes_handler.new()
 
     return jsonify({
         'routes': {
             'inspect': {
-                'html': request.host_url + new_route + '/inspect',
-                'json': request.host_url + new_route + '/inspect/json'
+                'html': request.host_url + route.path + '/inspect',
+                'json': request.host_url + route.path + '/inspect/json'
             },
-            'webhook': request.host_url + new_route
+            'webhook': request.host_url + route.path
         },
     })
 
@@ -59,7 +59,7 @@ def new_json():
 @app.route('/<string:route_path>/inspect', methods=['GET'])
 def inspect(route_path):
     # Lookup route
-    route = RouteModel.query.filter_by(route=route_path).first()
+    route = RouteModel.query.filter_by(path=route_path).first()
 
     # Return 404 if unknown route
     if not route:
@@ -76,7 +76,7 @@ def inspect(route_path):
 @app.route('/<string:route_path>/inspect/json', methods=['GET'])
 def inspect_json(route_path):
     # Lookup route
-    route = RouteModel.query.filter_by(route=route_path).first()
+    route = RouteModel.query.filter_by(path=route_path).first()
 
     # Return 404 if unknown route
     if not route:
@@ -100,7 +100,7 @@ def inspect_json(route_path):
 @app.route('/<string:route_path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def callback(route_path):
     # Lookup route
-    route = RouteModel.query.filter_by(route=route_path).first()
+    route = RouteModel.query.filter_by(path=route_path).first()
 
     # Return 404 if unknown route
     if not route:

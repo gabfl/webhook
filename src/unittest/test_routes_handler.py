@@ -31,20 +31,18 @@ class Test(unittest.TestCase):
         db.session.commit()
 
     def test_new(self):
-        route_path = routes_handler.new()
+        route = routes_handler.new()
 
-        # Lookup route
-        self.route_1 = RouteModel.query.filter_by(route=route_path).first()
-
-        self.assertIsInstance(self.route_1.id, int)
-        assert self.route_1.route == route_path
-        assert len(self.route_1.route) == 36
+        self.assertIsInstance(route, RouteModel)
+        self.assertIsInstance(route.id, int)
+        self.assertIsInstance(route.path, str)
+        assert len(route.path) == 36
 
     def test_cleanup_old_routes(self):
         # Create 2 routes, one expired
-        self.route_1 = RouteModel(route=str(uuid.uuid4()), )
+        self.route_1 = RouteModel(path=str(uuid.uuid4()), )
         db.session.add(self.route_1)
-        self.route_2 = RouteModel(route=str(uuid.uuid4()),
+        self.route_2 = RouteModel(path=str(uuid.uuid4()),
                                   creation_date=parse('1 month ago'))
         db.session.add(self.route_2)
 
@@ -67,7 +65,7 @@ class Test(unittest.TestCase):
 
         # First route and its callback should exist
         self.assertIsInstance(RouteModel.query.filter_by(
-            route=self.route_1.route).first(), RouteModel)
+            path=self.route_1.path).first(), RouteModel)
 
         callbacks = CallbackModel.query.filter_by(
             route_id=self.route_1.id).all()
@@ -78,7 +76,7 @@ class Test(unittest.TestCase):
 
         # Second route and it's callback should be deleted
         self.assertIsNone(RouteModel.query.filter_by(
-            route=self.route_2.route).first())
+            path=self.route_2.path).first())
 
         callbacks = CallbackModel.query.filter_by(
             route_id=self.route_2.id).all()

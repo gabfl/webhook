@@ -7,15 +7,12 @@ from .models import db, RouteModel, CallbackModel
 def new():
     """ Create a new route """
 
-    # Generate random string
-    route_path = str(uuid.uuid4())
-
     # Create route
-    route = RouteModel(route=route_path)
+    route = RouteModel(path=str(uuid.uuid4()))
     db.session.add(route)
     db.session.commit()
 
-    return route_path
+    return route
 
 
 def cleanup_old_routes():

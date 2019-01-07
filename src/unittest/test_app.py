@@ -56,30 +56,31 @@ class Test(unittest.TestCase):
 
     def test_inspect_as_html(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
 
-        rv = self.client.get('/' + path + '/inspect')
+        rv = self.client.get('/' + route.path + '/inspect')
         assert rv.status_code == 200
         assert b'Current route' in rv.data
 
     def test_inspect_as_html_with_callbacks_json(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
 
         # Try sending some data to the webhook URL
-        self.client.post('/' + path, json={
+        self.client.post('/' + route.path, json={
             'hello': 'world',
             'find_me': 'looking for this string'
         })
 
-        rv = self.client.get('/' + path + '/inspect')
+        rv = self.client.get('/' + route.path + '/inspect')
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
 
     def test_inspect_as_html_with_callbacks_get(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
+        path = route.path
 
         # Try sending some data to the webhook URL
         self.client.get('/' + path + '?some_var=looking-for-this-string')
@@ -91,7 +92,8 @@ class Test(unittest.TestCase):
 
     def test_inspect_as_html_with_callbacks_data(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
+        path = route.path
 
         # Try sending some data to the webhook URL
         self.client.post('/' + path, data=dict(
@@ -113,9 +115,9 @@ class Test(unittest.TestCase):
 
     def test_inspect_as_json(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
 
-        rv = self.client.get('/' + path + '/inspect/json')
+        rv = self.client.get('/' + route.path + '/inspect/json')
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         self.assertIsInstance(rv.json, dict)
@@ -132,7 +134,8 @@ class Test(unittest.TestCase):
 
     def test_inspect_as_json_with_callbacks_json(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
+        path = route.path
 
         # Try sending some data to the webhook URL
         self.client.post('/' + path, json={
@@ -152,7 +155,8 @@ class Test(unittest.TestCase):
 
     def test_inspect_as_json_with_callbacks_get(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
+        path = route.path
 
         # Try sending some data to the webhook URL
         self.client.get('/' + path + '?some_var=looking-for-this-string')
@@ -170,7 +174,8 @@ class Test(unittest.TestCase):
 
     def test_inspect_as_json_with_callbacks_data(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
+        path = route.path
 
         # Try sending some data to the webhook URL
         self.client.post('/' + path, data=dict(
@@ -196,33 +201,33 @@ class Test(unittest.TestCase):
 
     def test_callback_get(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
 
-        rv = self.client.get('/' + path)
+        rv = self.client.get('/' + route.path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 
     def test_callback_post(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
 
-        rv = self.client.post('/' + path)
+        rv = self.client.post('/' + route.path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 
     def test_callback_put(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
 
-        rv = self.client.put('/' + path)
+        rv = self.client.put('/' + route.path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 
     def test_callback_delete(self):
         # Generate a new path
-        path = routes_handler.new()
+        route = routes_handler.new()
 
-        rv = self.client.delete('/' + path)
+        rv = self.client.delete('/' + route.path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 

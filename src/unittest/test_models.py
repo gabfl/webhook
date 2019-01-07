@@ -22,23 +22,23 @@ class Test(unittest.TestCase):
         self.assertIsInstance(models.db, SQLAlchemy)
 
     def test_RouteModel(self):
-        self.route = models.RouteModel(route=str(uuid.uuid4()))
+        self.route = models.RouteModel(path=str(uuid.uuid4()))
         models.db.session.add(self.route)
         models.db.session.commit()
 
         self.assertIsInstance(self.route, models.RouteModel)
         self.assertIsInstance(self.route.id, int)
-        self.assertIsInstance(self.route.route, str)
+        self.assertIsInstance(self.route.path, str)
 
     def test_RouteModel_repr(self):
-        self.route = models.RouteModel(route=str(uuid.uuid4()))
+        self.route = models.RouteModel(path=str(uuid.uuid4()))
         models.db.session.add(self.route)
         models.db.session.commit()
 
         assert '<Route' in self.route.__repr__()
 
     def test_CallbackModel(self):
-        self.route = models.RouteModel(route=str(uuid.uuid4()))
+        self.route = models.RouteModel(path=str(uuid.uuid4()))
         models.db.session.add(self.route)
         models.db.session.commit()
 
@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
         self.assertIsInstance(self.callback, models.CallbackModel)
 
     def test_CallbackModel_repr(self):
-        self.route = models.RouteModel(route=str(uuid.uuid4()))
+        self.route = models.RouteModel(path=str(uuid.uuid4()))
         models.db.session.add(self.route)
         models.db.session.commit()
 

@@ -45,6 +45,44 @@ def save(route_id):
     return True
 
 
+def get_callbacks(route_id):
+    """ Prepare and returns the callbacks for a route ID """
+
+    # Load callbacks
+    callbacks = CallbackModel.query.filter_by(
+        route_id=route_id).order_by(CallbackModel.id.desc()).all()
+
+    # Process rows
+    callbacks_processed = []
+    for callback in callbacks:
+        # Prepare body
+        body = {
+            'data': callback.body if callback.body else None,
+            'size': len(callback.body) if callback.body else 0
+        }
+        if body['data'] and is_json(body['data']):
+            body['data'] = json.loads(body['data'])
+
+        # Prepare args
+        args = None
+        if callback.args:
+            args = json.loads(callback.args)
+
+        callbacks_processed.append(
+            {
+                'headers': json.loads(callback.headers),
+                'method': callback.method,
+                'args': args,
+                'body': body,
+                'date': callback.date,
+                'referrer': callback.referrer,
+                'remote_addr': callback.remote_addr
+            }
+        )
+
+    return callbacks_processed
+
+
 def is_json(data):
     """ Validate if a string is a Json """
 

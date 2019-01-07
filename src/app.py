@@ -56,17 +56,8 @@ def new_json():
     })
 
 
-@app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def catch_all(path):
-    # Get route
-    route_path = path
-
-    # If we are inspecting a route
-    inspect = route_path.rfind('/inspect')
-    if inspect > 0:
-        inspect_json = True if route_path.rfind('/inspect/json') > 0 else False
-        route_path = route_path[:inspect]
-
+@app.route('/<string:route_path>/inspect', methods=['GET'])
+def inspect(route_path):
     # Lookup route
     route = RouteModel.query.filter_by(route=route_path).first()
 
@@ -74,63 +65,51 @@ def catch_all(path):
     if not route:
         return redirect(url_for('abort_404')), 307
 
-    if inspect > 0:
-        # Load callbacks
-        callbacks = CallbackModel.query.filter_by(
-            route_id=route.id).order_by(CallbackModel.id.desc()).all()
+    return render_template(
+        'inspect.html',
+        route_path=route_path,
+        callbacks=callback_handler.get_callbacks(route.id),
+        host_url=request.host_url
+    )
 
-        # Process rows
-        callbacks_processed = []
-        for callback in callbacks:
-            # Prepare body
-            body = {
-                'data': callback.body if callback.body else None,
-                'size': len(callback.body) if callback.body else 0
-            }
-            if body['data'] and callback_handler.is_json(body['data']):
-                body['data'] = json.loads(body['data'])
 
-            # Prepare args
-            args = None
-            if callback.args:
-                args = json.loads(callback.args)
+@app.route('/<string:route_path>/inspect/json', methods=['GET'])
+def inspect_json(route_path):
+    # Lookup route
+    route = RouteModel.query.filter_by(route=route_path).first()
 
-            callbacks_processed.append(
-                {
-                    'headers': json.loads(callback.headers),
-                    'method': callback.method,
-                    'args': args,
-                    'body': body,
-                    'date': callback.date,
-                    'referrer': callback.referrer,
-                    'remote_addr': callback.remote_addr
-                }
-            )
+    # Return 404 if unknown route
+    if not route:
+        return redirect(url_for('abort_404')), 307
 
-        if inspect_json:  # Json format
-            return jsonify({
-                'routes': {
-                    'inspect': {
-                        'html': request.host_url + route_path + '/inspect',
-                        'json': request.host_url + route_path + '/inspect/json'
-                    },
-                    'webhook': request.host_url + route_path
-                },
-                'callbacks': callbacks_processed,
-                'creation_date': route.creation_date
-            })
-        else:  # HTML rendering
-            return render_template(
-                'inspect.html',
-                route_path=route_path,
-                callbacks=callbacks_processed,
-                host_url=request.host_url
-            )
-    else:
-        # Save callback
-        callback_handler.save(route.id)
+    return jsonify({
+        'routes': {
+            'inspect': {
+                'html': request.host_url + route_path + '/inspect',
+                'json': request.host_url + route_path + '/inspect/json'
+            },
+            'webhook': request.host_url + route_path
+        },
+        'callbacks': callback_handler.get_callbacks(route.id),
+        'creation_date': route.creation_date
+    })
 
-        return 'OK'
+
+# @app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+# def catch_all(path):
+@app.route('/<string:route_path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def callback(route_path):
+    # Lookup route
+    route = RouteModel.query.filter_by(route=route_path).first()
+
+    # Return 404 if unknown route
+    if not route:
+        return redirect(url_for('abort_404')), 307
+
+    # Save callback
+    callback_handler.save(route.id)
+
+    return 'OK'
 
 
 @app.route("/404")

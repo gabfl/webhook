@@ -54,39 +54,7 @@ class Test(unittest.TestCase):
         assert rv.status_code == 200
         assert b'Current route' in rv.data
 
-    def test_catch_all_get(self):
-        # Generate a new path
-        path = routes_handler.new()
-
-        rv = self.client.get('/' + path)
-        assert rv.status_code == 200
-        assert rv.data == b'OK'
-
-    def test_catch_all_post(self):
-        # Generate a new path
-        path = routes_handler.new()
-
-        rv = self.client.post('/' + path)
-        assert rv.status_code == 200
-        assert rv.data == b'OK'
-
-    def test_catch_all_put(self):
-        # Generate a new path
-        path = routes_handler.new()
-
-        rv = self.client.put('/' + path)
-        assert rv.status_code == 200
-        assert rv.data == b'OK'
-
-    def test_catch_all_delete(self):
-        # Generate a new path
-        path = routes_handler.new()
-
-        rv = self.client.delete('/' + path)
-        assert rv.status_code == 200
-        assert rv.data == b'OK'
-
-    def test_catch_all_inspect_as_html(self):
+    def test_inspect_as_html(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -94,7 +62,7 @@ class Test(unittest.TestCase):
         assert rv.status_code == 200
         assert b'Current route' in rv.data
 
-    def test_catch_all_inspect_as_html_with_callbacks_json(self):
+    def test_inspect_as_html_with_callbacks_json(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -109,7 +77,7 @@ class Test(unittest.TestCase):
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
 
-    def test_catch_all_inspect_as_html_with_callbacks_get(self):
+    def test_inspect_as_html_with_callbacks_get(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -121,7 +89,7 @@ class Test(unittest.TestCase):
         assert b'Current route' in rv.data
         assert b'looking-for-this-string' in rv.data
 
-    def test_catch_all_inspect_as_html_with_callbacks_data(self):
+    def test_inspect_as_html_with_callbacks_data(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -136,7 +104,7 @@ class Test(unittest.TestCase):
         assert b'Current route' in rv.data
         assert b'looking+for+this+string' in rv.data
 
-    def test_catch_all_inspect_as_json(self):
+    def test_inspect_as_json(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -155,7 +123,7 @@ class Test(unittest.TestCase):
         self.assertIsInstance(rv.json['routes']['webhook'], str)
         self.assertIsInstance(rv.json['creation_date'], str)
 
-    def test_catch_all_inspect_as_json_with_callbacks_json(self):
+    def test_inspect_as_json_with_callbacks_json(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -175,7 +143,7 @@ class Test(unittest.TestCase):
             self.assertIsInstance(callback['body']['data'], dict)
             self.assertIsInstance(callback['body']['size'], int)
 
-    def test_catch_all_inspect_as_json_with_callbacks_get(self):
+    def test_inspect_as_json_with_callbacks_get(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -193,7 +161,7 @@ class Test(unittest.TestCase):
             self.assertIsNone(callback['body']['data'])
             assert callback['body']['size'] == 0
 
-    def test_catch_all_inspect_as_json_with_callbacks_data(self):
+    def test_inspect_as_json_with_callbacks_data(self):
         # Generate a new path
         path = routes_handler.new()
 
@@ -213,10 +181,44 @@ class Test(unittest.TestCase):
             self.assertIsInstance(callback['body']['data'], str)
             self.assertIsInstance(callback['body']['size'], int)
 
-    def test_abort_404(self):
+    def test_callback_get(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        rv = self.client.get('/' + path)
+        assert rv.status_code == 200
+        assert rv.data == b'OK'
+
+    def test_callback_post(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        rv = self.client.post('/' + path)
+        assert rv.status_code == 200
+        assert rv.data == b'OK'
+
+    def test_callback_put(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        rv = self.client.put('/' + path)
+        assert rv.status_code == 200
+        assert rv.data == b'OK'
+
+    def test_callback_delete(self):
+        # Generate a new path
+        path = routes_handler.new()
+
+        rv = self.client.delete('/' + path)
+        assert rv.status_code == 200
+        assert rv.data == b'OK'
+
+    def test_callback_invalid(self):
         rv = self.client.get('/some_bad_route')
         # Should be a 307 to redirect to 404
         assert rv.status_code == 307
+        assert b'You should be redirected automatically' in rv.data
+        assert b'/404' in rv.data
 
     def test_abort_404_2(self):
         rv = self.client.get('/404')

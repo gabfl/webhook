@@ -30,7 +30,7 @@ class CallbackModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     route_id = db.Column(db.Integer, db.ForeignKey(RouteModel.id))
-    headers = db.Column(db.Text)
+    headers = db.Column(db.Text, default='{}')
     method = db.Column(db.String(12))
     args = db.Column(db.Text())
     body = db.Column(db.Text())

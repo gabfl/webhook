@@ -104,6 +104,13 @@ class Test(unittest.TestCase):
         assert b'Current route' in rv.data
         assert b'looking+for+this+string' in rv.data
 
+    def test_inspect_as_html_invalid(self):
+        rv = self.client.get('/some_bad_route/inspect')
+        # Should be a 307 to redirect to 404
+        assert rv.status_code == 307
+        assert b'You should be redirected automatically' in rv.data
+        assert b'/404' in rv.data
+
     def test_inspect_as_json(self):
         # Generate a new path
         path = routes_handler.new()
@@ -180,6 +187,12 @@ class Test(unittest.TestCase):
             self.assertIsInstance(callback['body'], dict)
             self.assertIsInstance(callback['body']['data'], str)
             self.assertIsInstance(callback['body']['size'], int)
+
+    def test_inspect_as_json_invalid(self):
+        rv = self.client.get('/some_bad_route/inspect/json')
+        # Should be a 307 to redirect to 404
+        assert rv.status_code == 404
+        assert rv.json['message'] == 'Invalid route'
 
     def test_callback_get(self):
         # Generate a new path

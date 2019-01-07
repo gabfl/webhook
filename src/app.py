@@ -80,7 +80,9 @@ def inspect_json(route_path):
 
     # Return 404 if unknown route
     if not route:
-        return redirect(url_for('abort_404')), 307
+        return jsonify({
+            'message': "Invalid route"
+        }), 404
 
     return jsonify({
         'routes': {
@@ -95,8 +97,6 @@ def inspect_json(route_path):
     })
 
 
-# @app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-# def catch_all(path):
 @app.route('/<string:route_path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def callback(route_path):
     # Lookup route

@@ -95,7 +95,8 @@ curl -X POST {{ host_url }}{{ route_path }} \
                             <td>Body</td>
                             <td>
                                 {% if callback.body['data'] %}
-                                    <pre><code id="body-{{  rowloop.index }}">{{ callback.body['data'] }}</code></pre>
+                                    <textarea id="body-{{  rowloop.index }}" style="height: 240px; width: 80%;">{{ callback.body['data'] }}</textarea>
+                                    <!-- <pre><code id="body-{{  rowloop.index }}">{{ callback.body['data'] }}</code></pre> -->
                                 {% else %}
                                     <span style="font-style: italic;">empty!</span>
                                 {% endif %}

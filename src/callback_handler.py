@@ -50,7 +50,7 @@ def get_callbacks(route_id):
 
     # Load callbacks
     callbacks = CallbackModel.query.filter_by(
-        route_id=route_id).order_by(CallbackModel.id.desc()).all()
+        route_id=route_id).order_by(CallbackModel.id.desc()).limit(100).all()
 
     # Process rows
     callbacks_processed = []

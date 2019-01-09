@@ -15,7 +15,7 @@ This projects generates random ephemerous routes like `/3989c985-0659-4c2d-b38f-
 You can send any HTTP request to the route, for example:
 
 ```bash
-curl -X POST https://webhook.link//3989c985-0659-4c2d-b38f-9d83d74fe0bb \
+curl -X POST https://webhook.link/3989c985-0659-4c2d-b38f-9d83d74fe0bb \
 -H "Content-Type: application/json" \
 -H "X-MyHeader: 123" \
 -d '{"hello": "world", "is_true": true}'

@@ -110,7 +110,6 @@ curl -X POST {{ host_url }}{{ route_path }} \
             </table>
         </div>
 
-
         {% if callback.body['data'] and callback.body['data'] is mapping %}
             <script>
                 var obj = {{ callback.body['data'] | tojson }};
@@ -120,6 +119,10 @@ curl -X POST {{ host_url }}{{ route_path }} \
             </script>
         {% endif %}
     {% endfor %}
+
+    {% if cursor %}
+        <a href="?cursor={{ cursor }}">Previous results</a>
+    {% endif %}
 {% else %}
     <div class="alert alert-primary" role="alert">
         No callbacks yet!<br />

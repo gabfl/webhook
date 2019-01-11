@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateparser import parse
 
 from flask import Flask
 from flask import current_app as app
@@ -20,6 +21,8 @@ class RouteModel(db.Model):
     path = db.Column(db.String(80), unique=True, nullable=False, index=True)
     creation_date = db.Column(
         db.DateTime, nullable=False, default=datetime.now, index=True)
+    expiration_date = db.Column(
+        db.DateTime, nullable=False, default=parse('in 1 week'), index=True)
 
     def __repr__(self):
         return '<Route %r>' % self.path

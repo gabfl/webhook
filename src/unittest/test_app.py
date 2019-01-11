@@ -26,8 +26,13 @@ class Test(BaseTest):
         assert rv.status_code == 307
         assert 'text/html' in rv.headers['Content-Type']
 
-    def test_new_json(self):
-        rv = self.client.get('/new/json')
+    def test_new_2(self):
+        rv = self.client.get('/new', follow_redirects=True)
+        assert rv.status_code == 200
+        assert b'Current route' in rv.data
+
+    def test_api_new(self):
+        rv = self.client.get('/api/new')
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         self.assertIsInstance(rv.json['routes'], dict)
@@ -35,12 +40,7 @@ class Test(BaseTest):
         self.assertIsInstance(rv.json['routes']['inspect']['html'], str)
         self.assertIsInstance(rv.json['routes']['inspect']['json'], str)
 
-    def test_new_2(self):
-        rv = self.client.get('/new', follow_redirects=True)
-        assert rv.status_code == 200
-        assert b'Current route' in rv.data
-
-    def test_inspect_as_html(self):
+    def test_inspect(self):
         # Generate a new path
         route = routes_handler.new()
 
@@ -50,7 +50,7 @@ class Test(BaseTest):
         # There should not be a next page of results
         assert b'Previous results' not in rv.data
 
-    def test_inspect_as_html_cursor(self):
+    def test_inspect_cursor(self):
         # Generate a new path
         route = routes_handler.new()
         path = route.path
@@ -65,7 +65,7 @@ class Test(BaseTest):
         # There should be a next page of results
         assert b'Previous results' in rv.data
 
-    def test_inspect_as_html_with_callbacks_json(self):
+    def test_inspect_with_callbacks_json(self):
         # Generate a new path
         route = routes_handler.new()
 
@@ -80,7 +80,7 @@ class Test(BaseTest):
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
 
-    def test_inspect_as_html_with_callbacks_get(self):
+    def test_inspect_with_callbacks_get(self):
         # Generate a new path
         route = routes_handler.new()
         path = route.path
@@ -93,7 +93,7 @@ class Test(BaseTest):
         assert b'Current route' in rv.data
         assert b'looking-for-this-string' in rv.data
 
-    def test_inspect_as_html_with_callbacks_data(self):
+    def test_inspect_with_callbacks_data(self):
         # Generate a new path
         route = routes_handler.new()
         path = route.path
@@ -109,18 +109,18 @@ class Test(BaseTest):
         assert b'Current route' in rv.data
         assert b'looking+for+this+string' in rv.data
 
-    def test_inspect_as_html_invalid(self):
+    def test_inspect_invalid(self):
         rv = self.client.get('/some_bad_route/inspect')
         # Should be a 307 to redirect to 404
         assert rv.status_code == 307
         assert b'You should be redirected automatically' in rv.data
         assert b'/404' in rv.data
 
-    def test_inspect_as_json(self):
+    def test_api_inspect(self):
         # Generate a new path
         route = routes_handler.new()
 
-        rv = self.client.get('/' + route.path + '/inspect/json')
+        rv = self.client.get('/api/' + route.path + '/inspect')
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         self.assertIsInstance(rv.json, dict)
@@ -136,7 +136,7 @@ class Test(BaseTest):
         self.assertIsInstance(rv.json['expiration_date'], str)
         self.assertIsNone(rv.json['next'])
 
-    def test_inspect_as_json_cursor(self):
+    def test_api_inspect_cursor(self):
         # Generate a new path
         route = routes_handler.new()
         path = route.path
@@ -145,7 +145,7 @@ class Test(BaseTest):
         for i in range(60):
             self.client.get('/' + path)
 
-        rv = self.client.get('/' + path + '/inspect/json')
+        rv = self.client.get('/api/' + path + '/inspect')
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
 
@@ -160,7 +160,7 @@ class Test(BaseTest):
         # Ensure that we have an empty field for the next page
         self.assertIsNone(rv.json['next'])
 
-    def test_inspect_as_json_with_callbacks_json(self):
+    def test_api_inspect_with_callbacks_json(self):
         # Generate a new path
         route = routes_handler.new()
         path = route.path
@@ -171,7 +171,7 @@ class Test(BaseTest):
             'find_me': 'looking for this string'
         })
 
-        rv = self.client.get('/' + path + '/inspect/json')
+        rv = self.client.get('/api/' + path + '/inspect')
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         assert 'callbacks' in rv.json
@@ -181,7 +181,7 @@ class Test(BaseTest):
             self.assertIsInstance(callback['body']['data'], dict)
             self.assertIsInstance(callback['body']['size'], int)
 
-    def test_inspect_as_json_with_callbacks_get(self):
+    def test_api_inspect_with_callbacks_get(self):
         # Generate a new path
         route = routes_handler.new()
         path = route.path
@@ -189,7 +189,7 @@ class Test(BaseTest):
         # Try sending some data to the webhook URL
         self.client.get('/' + path + '?some_var=looking-for-this-string')
 
-        rv = self.client.get('/' + path + '/inspect/json')
+        rv = self.client.get('/api/' + path + '/inspect')
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         assert 'callbacks' in rv.json
@@ -200,7 +200,7 @@ class Test(BaseTest):
             self.assertIsNone(callback['body']['data'])
             assert callback['body']['size'] == 0
 
-    def test_inspect_as_json_with_callbacks_data(self):
+    def test_api_inspect_with_callbacks_data(self):
         # Generate a new path
         route = routes_handler.new()
         path = route.path
@@ -211,7 +211,7 @@ class Test(BaseTest):
             find_me='looking for this string'
         ))
 
-        rv = self.client.get('/' + path + '/inspect/json')
+        rv = self.client.get('/api/' + path + '/inspect')
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         assert 'callbacks' in rv.json
@@ -221,8 +221,8 @@ class Test(BaseTest):
             self.assertIsInstance(callback['body']['data'], str)
             self.assertIsInstance(callback['body']['size'], int)
 
-    def test_inspect_as_json_invalid(self):
-        rv = self.client.get('/some_bad_route/inspect/json')
+    def test_api_inspect_invalid(self):
+        rv = self.client.get('/api/some_bad_route/inspect')
         # Should be a 307 to redirect to 404
         assert rv.status_code == 404
         assert rv.json['message'] == 'Invalid route'

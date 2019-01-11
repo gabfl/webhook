@@ -40,7 +40,7 @@ def new():
     return redirect('/' + route.path + '/inspect'), 307
 
 
-@app.route("/new/json")
+@app.route("/api/new")
 def new_json():
     # Generate a new route
     route = routes_handler.new()
@@ -49,7 +49,7 @@ def new_json():
         'routes': {
             'inspect': {
                 'html': request.host_url + route.path + '/inspect',
-                'json': request.host_url + route.path + '/inspect/json'
+                'json': request.host_url + 'api/' + route.path + '/inspect'
             },
             'webhook': request.host_url + route.path
         },
@@ -78,7 +78,7 @@ def inspect(route_path):
     )
 
 
-@app.route('/<string:route_path>/inspect/json', methods=['GET'])
+@app.route('/api/<string:route_path>/inspect', methods=['GET'])
 def inspect_json(route_path):
     # Lookup route
     route = RouteModel.query.filter_by(path=route_path).first()
@@ -98,14 +98,14 @@ def inspect_json(route_path):
         'routes': {
             'inspect': {
                 'html': request.host_url + route_path + '/inspect',
-                'json': request.host_url + route_path + '/inspect/json'
+                'json': request.host_url + 'api/' + route_path + '/inspect'
             },
             'webhook': request.host_url + route_path
         },
         'callbacks': callbacks,
         'creation_date': route.creation_date,
         'expiration_date': route.expiration_date,
-        'next': request.host_url + route_path + '/inspect/json?cursor=' + str(cursor) if cursor else None
+        'next': request.host_url + 'api/' + route_path + '/inspect?cursor=' + str(cursor) if cursor else None
     })
 
 

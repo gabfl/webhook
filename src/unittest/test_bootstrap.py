@@ -1,11 +1,10 @@
-import unittest
-
 from flask import Flask
 
+from .base import BaseTest
 from .. import bootstrap
 
 
-class Test(unittest.TestCase):
+class Test(BaseTest):
 
     def test_get_or_create_app(self):
 

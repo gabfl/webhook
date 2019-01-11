@@ -1,5 +1,5 @@
 import uuid
-from dateparser import parse
+from datetime import datetime
 
 from .models import db, RouteModel, CallbackModel
 
@@ -16,14 +16,11 @@ def new():
 
 
 def cleanup_old_routes():
-    """ Delete old routes """
-
-    # Deletion date limit
-    date_limit = parse('1 week ago')
+    """ Delete expired routes """
 
     # Load routes
     routes = RouteModel.query.filter(
-        RouteModel.creation_date < date_limit).all()
+        RouteModel.expiration_date < datetime.now()).all()
 
     for route in routes:
         # Delete callbacks
@@ -32,5 +29,5 @@ def cleanup_old_routes():
         # Delete route
         db.session.delete(route)
 
-        # Commit
-        db.session.commit()
+    # Commit
+    db.session.commit()

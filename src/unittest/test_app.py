@@ -1,23 +1,9 @@
-import unittest
-import tempfile
-import os
 
-import pytest
-
+from .base import BaseTest
 from .. import app, bootstrap, routes_handler
 
 
-class Test(unittest.TestCase):
-
-    def setUp(self):
-        self.app = bootstrap.get_or_create_app()
-        self.db_fd, self.app.config['DATABASE'] = tempfile.mkstemp()
-        self.app.config['TESTING'] = True
-        self.client = self.app.test_client()
-
-    def tearDown(self):
-        os.close(self.db_fd)
-        os.unlink(self.app.config['DATABASE'])
+class Test(BaseTest):
 
     def test_hp(self):
         rv = self.client.get('/')
@@ -61,6 +47,23 @@ class Test(unittest.TestCase):
         rv = self.client.get('/' + route.path + '/inspect')
         assert rv.status_code == 200
         assert b'Current route' in rv.data
+        # There should not be a next page of results
+        assert b'Previous results' not in rv.data
+
+    def test_inspect_as_html_cursor(self):
+        # Generate a new path
+        route = routes_handler.new()
+        path = route.path
+
+        # Generate 60 callbacks
+        for i in range(60):
+            self.client.get('/' + path)
+
+        rv = self.client.get('/' + path + '/inspect')
+        assert rv.status_code == 200
+        assert b'Current route' in rv.data
+        # There should be a next page of results
+        assert b'Previous results' in rv.data
 
     def test_inspect_as_html_with_callbacks_json(self):
         # Generate a new path
@@ -123,7 +126,6 @@ class Test(unittest.TestCase):
         self.assertIsInstance(rv.json, dict)
         assert 'callbacks' in rv.json
         assert 'routes' in rv.json
-        assert 'creation_date' in rv.json
         self.assertIsInstance(rv.json['callbacks'], list)
         self.assertIsInstance(rv.json['routes'], dict)
         self.assertIsInstance(rv.json['routes']['inspect'], dict)
@@ -131,6 +133,32 @@ class Test(unittest.TestCase):
         self.assertIsInstance(rv.json['routes']['inspect']['json'], str)
         self.assertIsInstance(rv.json['routes']['webhook'], str)
         self.assertIsInstance(rv.json['creation_date'], str)
+        self.assertIsInstance(rv.json['expiration_date'], str)
+        self.assertIsNone(rv.json['next'])
+
+    def test_inspect_as_json_cursor(self):
+        # Generate a new path
+        route = routes_handler.new()
+        path = route.path
+
+        # Generate 60 callbacks
+        for i in range(60):
+            self.client.get('/' + path)
+
+        rv = self.client.get('/' + path + '/inspect/json')
+        assert rv.status_code == 200
+        assert 'application/json' in rv.headers['Content-Type']
+
+        # Ensure that we have a URL for the next results
+        self.assertIsInstance(rv.json['next'], str)
+
+        # Load the next page of results
+        rv = self.client.get(rv.json['next'])
+        assert rv.status_code == 200
+        assert 'application/json' in rv.headers['Content-Type']
+
+        # Ensure that we have an empty field for the next page
+        self.assertIsNone(rv.json['next'])
 
     def test_inspect_as_json_with_callbacks_json(self):
         # Generate a new path

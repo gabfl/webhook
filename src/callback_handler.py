@@ -45,12 +45,14 @@ def save(route_id):
     return True
 
 
-def get_callbacks(route_id):
+def get_callbacks(route_id, cursor=None, limit=50):
     """ Prepare and returns the callbacks for a route ID """
 
     # Load callbacks
-    callbacks = CallbackModel.query.filter_by(
-        route_id=route_id).order_by(CallbackModel.id.desc()).limit(100).all()
+    callbacks = CallbackModel.query.filter_by(route_id=route_id)
+    if cursor:
+        callbacks = callbacks.filter(CallbackModel.id < cursor)
+    callbacks = callbacks.order_by(CallbackModel.id.desc()).limit(limit).all()
 
     # Process rows
     callbacks_processed = []
@@ -70,6 +72,7 @@ def get_callbacks(route_id):
 
         callbacks_processed.append(
             {
+                'id': callback.id,
                 'headers': json.loads(callback.headers),
                 'method': callback.method,
                 'args': args,
@@ -81,6 +84,12 @@ def get_callbacks(route_id):
         )
 
     return callbacks_processed
+
+
+def get_cursor(callbacks, limit=50):
+    """ Returns the next page cursor """
+
+    return callbacks[-1].get('id') if callbacks and len(callbacks) >= limit else None
 
 
 def is_json(data):

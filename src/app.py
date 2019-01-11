@@ -65,10 +65,15 @@ def inspect(route_path):
     if not route:
         return redirect(url_for('abort_404')), 307
 
+    # Get callbacks
+    callbacks = callback_handler.get_callbacks(
+        route.id, cursor=request.args.get('cursor'))
+
     return render_template(
         'inspect.html',
         route_path=route_path,
-        callbacks=callback_handler.get_callbacks(route.id),
+        callbacks=callbacks,
+        cursor=callback_handler.get_cursor(callbacks),
         host_url=request.host_url
     )
 
@@ -84,6 +89,11 @@ def inspect_json(route_path):
             'message': "Invalid route"
         }), 404
 
+    # Get callbacks
+    callbacks = callback_handler.get_callbacks(
+        route.id, cursor=request.args.get('cursor'))
+    cursor = callback_handler.get_cursor(callbacks)
+
     return jsonify({
         'routes': {
             'inspect': {
@@ -92,8 +102,10 @@ def inspect_json(route_path):
             },
             'webhook': request.host_url + route_path
         },
-        'callbacks': callback_handler.get_callbacks(route.id),
-        'creation_date': route.creation_date
+        'callbacks': callbacks,
+        'creation_date': route.creation_date,
+        'expiration_date': route.expiration_date,
+        'next': request.host_url + route_path + '/inspect/json?cursor=' + str(cursor) if cursor else None
     })
 
 

@@ -43,7 +43,6 @@ class Test(BaseTest):
             assert 'remote_addr' in callback
 
     def test_get_callbacks_cursor(self):
-
         # Create a route
         route = RouteModel(path=str(uuid.uuid4()))
         db.session.add(route)
@@ -69,6 +68,16 @@ class Test(BaseTest):
         callbacks = callback_handler.get_callbacks(route.id, cursor=cursor)
         self.assertIsInstance(callbacks, list)
         assert len(callbacks) == 10
+
+    def test_get_cursor(self):
+        assert callback_handler.get_cursor([]) is None
+        assert callback_handler.get_cursor(None) is None
+        assert callback_handler.get_cursor([
+            {'id': 5},
+            {'id': 4},
+            {'id': 3},
+            {'id': 2}
+        ], limit=4) == 2
 
     def test_is_json(self):
         assert callback_handler.is_json('abc') is False

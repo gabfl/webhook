@@ -1,6 +1,4 @@
 import unittest
-import tempfile
-import os
 
 from .. import app, bootstrap
 from ..models import db

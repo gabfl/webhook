@@ -265,6 +265,14 @@ class Test(BaseTest):
         assert rv.status_code == 200
         assert rv.json['message'] == 'The webhook has been deleted'
 
+        # We should obtain an error if we call the same route again
+        rv = self.client.get(
+            '/api/delete/' + path + '/' + str(rv.json['callbacks'][0]['id'])
+        )
+        assert 'application/json' in rv.headers['Content-Type']
+        assert rv.status_code == 400
+        assert rv.json['message'] == 'Invalid route or callback ID'
+
     def test_api_delete_callback_2(self):
         rv = self.client.get('/api/delete/some_bad_route/1')
         assert 'application/json' in rv.headers['Content-Type']

@@ -23,11 +23,17 @@ def cleanup_old_routes():
         RouteModel.expiration_date < datetime.now()).all()
 
     for route in routes:
-        # Delete callbacks
-        CallbackModel.query.filter_by(route_id=route.id).delete()
+        delete(route)
 
-        # Delete route
-        db.session.delete(route)
+
+def delete(route):
+    """ Delete a route and all its callbacks """
+
+    # Delete callbacks
+    CallbackModel.query.filter_by(route_id=route.id).delete()
+
+    # Delete route
+    db.session.delete(route)
 
     # Commit
     db.session.commit()

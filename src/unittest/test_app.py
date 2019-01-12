@@ -38,13 +38,29 @@ class Test(BaseTest):
         self.assertIsInstance(rv.json['routes'], dict)
         self.assertIsInstance(rv.json['routes']['inspect'], dict)
         self.assertIsInstance(rv.json['routes']['inspect']['html'], str)
-        self.assertIsInstance(rv.json['routes']['inspect']['json'], str)
+        self.assertIsInstance(rv.json['routes']['inspect']['api'], str)
+
+    def test_api_delete_route(self):
+        # Generate a new path
+        route = routes_handler.new()
+        path = route.path
+
+        rv = self.client.get('/api/delete/' + path)
+        assert 'application/json' in rv.headers['Content-Type']
+        assert rv.status_code == 200
+        assert rv.json['message'] == 'The route has been deleted'
+
+    def test_api_delete_route_2(self):
+        rv = self.client.get('/api/delete/some_bad_route')
+        assert 'application/json' in rv.headers['Content-Type']
+        assert rv.status_code == 404
+        assert rv.json['message'] == 'Invalid route'
 
     def test_inspect(self):
         # Generate a new path
         route = routes_handler.new()
 
-        rv = self.client.get('/' + route.path + '/inspect')
+        rv = self.client.get('/inspect/' + route.path)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         # There should not be a next page of results
@@ -59,7 +75,7 @@ class Test(BaseTest):
         for i in range(60):
             self.client.get('/' + path)
 
-        rv = self.client.get('/' + path + '/inspect')
+        rv = self.client.get('/inspect/' + path)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         # There should be a next page of results
@@ -75,7 +91,7 @@ class Test(BaseTest):
             'find_me': 'looking for this string'
         })
 
-        rv = self.client.get('/' + route.path + '/inspect')
+        rv = self.client.get('/inspect/' + route.path)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
@@ -88,7 +104,7 @@ class Test(BaseTest):
         # Try sending some data to the webhook URL
         self.client.get('/' + path + '?some_var=looking-for-this-string')
 
-        rv = self.client.get('/' + path + '/inspect')
+        rv = self.client.get('/inspect/' + path)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         assert b'looking-for-this-string' in rv.data
@@ -104,13 +120,13 @@ class Test(BaseTest):
             find_me='looking for this string'
         ))
 
-        rv = self.client.get('/' + path + '/inspect')
+        rv = self.client.get('/inspect/' + path)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         assert b'looking+for+this+string' in rv.data
 
     def test_inspect_invalid(self):
-        rv = self.client.get('/some_bad_route/inspect')
+        rv = self.client.get('/inspect/some_bad_route')
         # Should be a 307 to redirect to 404
         assert rv.status_code == 307
         assert b'You should be redirected automatically' in rv.data
@@ -120,7 +136,7 @@ class Test(BaseTest):
         # Generate a new path
         route = routes_handler.new()
 
-        rv = self.client.get('/api/' + route.path + '/inspect')
+        rv = self.client.get('/api/inspect/' + route.path)
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         self.assertIsInstance(rv.json, dict)
@@ -130,7 +146,9 @@ class Test(BaseTest):
         self.assertIsInstance(rv.json['routes'], dict)
         self.assertIsInstance(rv.json['routes']['inspect'], dict)
         self.assertIsInstance(rv.json['routes']['inspect']['html'], str)
-        self.assertIsInstance(rv.json['routes']['inspect']['json'], str)
+        self.assertIsInstance(rv.json['routes']['inspect']['api'], str)
+        self.assertIsInstance(rv.json['routes']['delete'], dict)
+        self.assertIsInstance(rv.json['routes']['delete']['api'], str)
         self.assertIsInstance(rv.json['routes']['webhook'], str)
         self.assertIsInstance(rv.json['creation_date'], str)
         self.assertIsInstance(rv.json['expiration_date'], str)
@@ -145,7 +163,7 @@ class Test(BaseTest):
         for i in range(60):
             self.client.get('/' + path)
 
-        rv = self.client.get('/api/' + path + '/inspect')
+        rv = self.client.get('/api/inspect/' + path)
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
 
@@ -171,7 +189,7 @@ class Test(BaseTest):
             'find_me': 'looking for this string'
         })
 
-        rv = self.client.get('/api/' + path + '/inspect')
+        rv = self.client.get('/api/inspect/' + path)
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         assert 'callbacks' in rv.json
@@ -180,6 +198,8 @@ class Test(BaseTest):
             self.assertIsInstance(callback['body'], dict)
             self.assertIsInstance(callback['body']['data'], dict)
             self.assertIsInstance(callback['body']['size'], int)
+            self.assertIsInstance(callback['routes'], dict)
+            self.assertIsInstance(callback['routes']['delete'], str)
 
     def test_api_inspect_with_callbacks_get(self):
         # Generate a new path
@@ -189,7 +209,7 @@ class Test(BaseTest):
         # Try sending some data to the webhook URL
         self.client.get('/' + path + '?some_var=looking-for-this-string')
 
-        rv = self.client.get('/api/' + path + '/inspect')
+        rv = self.client.get('/api/inspect/' + path)
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         assert 'callbacks' in rv.json
@@ -211,7 +231,7 @@ class Test(BaseTest):
             find_me='looking for this string'
         ))
 
-        rv = self.client.get('/api/' + path + '/inspect')
+        rv = self.client.get('/api/inspect/' + path)
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         assert 'callbacks' in rv.json
@@ -222,8 +242,31 @@ class Test(BaseTest):
             self.assertIsInstance(callback['body']['size'], int)
 
     def test_api_inspect_invalid(self):
-        rv = self.client.get('/api/some_bad_route/inspect')
-        # Should be a 307 to redirect to 404
+        rv = self.client.get('/api/inspect/some_bad_route')
+        assert rv.status_code == 404
+        assert rv.json['message'] == 'Invalid route'
+
+    def test_api_delete_callback(self):
+        # Generate a new path
+        route = routes_handler.new()
+        path = route.path
+
+        # Generate a callback
+        self.client.get('/' + route.path)
+
+        # Call the inspect endpoint
+        rv = self.client.get('/api/inspect/' + path)
+
+        # Call the callback deletion endpoint
+        rv = self.client.get('/api/delete/' + path + '/' +
+                             str(rv.json['callbacks'][0]['id']))
+        assert 'application/json' in rv.headers['Content-Type']
+        assert rv.status_code == 200
+        assert rv.json['message'] == 'The webhook has been deleted'
+
+    def test_api_delete_callback_2(self):
+        rv = self.client.get('/api/delete/some_bad_route/1')
+        assert 'application/json' in rv.headers['Content-Type']
         assert rv.status_code == 404
         assert rv.json['message'] == 'Invalid route'
 

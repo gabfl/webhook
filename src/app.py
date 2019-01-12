@@ -37,7 +37,7 @@ def new():
     # Generate a new route
     route = routes_handler.new()
 
-    return redirect('/' + route.path + '/inspect'), 307
+    return redirect('/inspect/' + route.path), 307
 
 
 @app.route("/api/new")
@@ -48,15 +48,34 @@ def new_json():
     return jsonify({
         'routes': {
             'inspect': {
-                'html': request.host_url + route.path + '/inspect',
-                'json': request.host_url + 'api/' + route.path + '/inspect'
+                'html': request.host_url + 'inspect/' + route.path,
+                'api': request.host_url + 'api/inspect/' + route.path
             },
             'webhook': request.host_url + route.path
         },
     })
 
 
-@app.route('/<string:route_path>/inspect', methods=['GET'])
+@app.route("/api/delete/<string:route_path>")
+def delete_route_json(route_path):
+    # Lookup route
+    route = RouteModel.query.filter_by(path=route_path).first()
+
+    # Return 404 if unknown route
+    if not route:
+        return jsonify({
+            'message': "Invalid route"
+        }), 404
+
+    # Delete route and its callbacks
+    routes_handler.delete(route)
+
+    return jsonify({
+        'message': "The route has been deleted"
+    })
+
+
+@app.route('/inspect/<string:route_path>', methods=['GET'])
 def inspect(route_path):
     # Lookup route
     route = RouteModel.query.filter_by(path=route_path).first()
@@ -78,7 +97,7 @@ def inspect(route_path):
     )
 
 
-@app.route('/api/<string:route_path>/inspect', methods=['GET'])
+@app.route('/api/inspect/<string:route_path>', methods=['GET'])
 def inspect_json(route_path):
     # Lookup route
     route = RouteModel.query.filter_by(path=route_path).first()
@@ -94,19 +113,52 @@ def inspect_json(route_path):
         route.id, cursor=request.args.get('cursor'))
     cursor = callback_handler.get_cursor(callbacks)
 
+    # Augment callbacks
+    for callback in callbacks:
+        callback['routes'] = {
+            'delete': request.host_url + 'api/delete/' + route_path + '/' + str(callback['id'])
+        }
+
     return jsonify({
         'routes': {
             'inspect': {
-                'html': request.host_url + route_path + '/inspect',
-                'json': request.host_url + 'api/' + route_path + '/inspect'
+                'html': request.host_url + 'inspect/' + route_path,
+                'api': request.host_url + 'api/inspect/' + route_path
+            },
+            'delete': {
+                'api': request.host_url + 'api/delete/' + route_path
             },
             'webhook': request.host_url + route_path
         },
         'callbacks': callbacks,
         'creation_date': route.creation_date,
         'expiration_date': route.expiration_date,
-        'next': request.host_url + 'api/' + route_path + '/inspect?cursor=' + str(cursor) if cursor else None
+        'next': request.host_url + 'api/inspect/' + route_path + '?cursor=' + str(cursor) if cursor else None
     })
+
+
+@app.route("/api/delete/<string:route_path>/<int:callback_id>")
+def delete_callback_json(route_path, callback_id):
+    # Lookup route
+    route = RouteModel.query.filter_by(path=route_path).first()
+
+    # Return 404 if unknown route
+    if not route:
+        return jsonify({
+            'message': "Invalid route"
+        }), 404
+
+    # Delete a callback
+    delete = callback_handler.delete(route_id=route.id, id_=callback_id)
+
+    if delete:
+        return jsonify({
+            'message': "The webhook has been deleted"
+        })
+    else:
+        return jsonify({
+            'message': "Invalid route or callback ID"
+        }), 400
 
 
 @app.route('/<string:route_path>', methods=['GET', 'POST', 'PUT', 'DELETE'])

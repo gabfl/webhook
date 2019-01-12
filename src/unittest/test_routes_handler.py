@@ -75,10 +75,39 @@ class Test(BaseTest):
             self.assertIsInstance(callback, CallbackModel)
 
         # Second route and it's callback should be deleted
-        self.assertIsNone(RouteModel.query.filter_by(
-            path=self.route_2.path).first())
+        assert RouteModel.query.filter_by(
+            path=self.route_2.path).first() is None
 
         callbacks = CallbackModel.query.filter_by(
             route_id=self.route_2.id).all()
+        self.assertIsInstance(callbacks, list)
+        assert len(callbacks) == 0
+
+    def test_delete(self):
+
+        # Create 2 routes, one expired
+        route = RouteModel(path=str(uuid.uuid4()), )
+        db.session.add(route)
+
+        db.session.commit()
+
+        # Add some callback rows
+        callback_1 = CallbackModel(route_id=route.id)
+        db.session.add(callback_1)
+        callback_2 = CallbackModel(route_id=route.id)
+        db.session.add(callback_2)
+
+        db.session.commit()
+
+        # Call route deletion method
+        routes_handler.delete(route)
+
+        # Verify that the route is deleted
+        assert RouteModel.query.filter_by(
+            path=route.path).first() is None
+
+        # Verify that the callbacks are deleted
+        callbacks = CallbackModel.query.filter_by(
+            route_id=route.id).all()
         self.assertIsInstance(callbacks, list)
         assert len(callbacks) == 0

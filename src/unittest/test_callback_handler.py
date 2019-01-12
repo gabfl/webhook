@@ -45,7 +45,6 @@ class Test(BaseTest):
             route_id=1234, id_=5678) is False
 
     def test_get_callbacks(self):
-
         # Create a route
         route = RouteModel(path=str(uuid.uuid4()))
         db.session.add(route)

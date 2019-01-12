@@ -48,12 +48,12 @@ def save(route_id):
 def delete(route_id, id_):
     """ Delete a callback """
 
-    # Lookup route
+    # Lookup callback
     callback = CallbackModel.query.filter_by(
         route_id=route_id).filter_by(id=id_).first()
 
     if callback:
-        # Delete route
+        # Delete callback
         db.session.delete(callback)
 
         # Commit

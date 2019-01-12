@@ -12,8 +12,39 @@ class Test(BaseTest):
         CallbackModel.query.delete()
         db.session.commit()
 
-    def test_get_callbacks(self):
+    def test_delete(self):
+        # Create a route
+        route = RouteModel(path=str(uuid.uuid4()))
+        db.session.add(route)
 
+        db.session.commit()
+
+        # Add some callback rows
+        callback = CallbackModel(route_id=route.id)
+        db.session.add(callback)
+
+        db.session.commit()
+
+        assert callback_handler.delete(
+            route_id=route.id, id_=callback.id) is True
+
+    def test_delete_2(self):
+        # Create a route
+        route = RouteModel(path=str(uuid.uuid4()))
+        db.session.add(route)
+
+        db.session.commit()
+
+        # Test invalid callback ID
+        assert callback_handler.delete(
+            route_id=route.id, id_=1234) is False
+
+    def test_delete_3(self):
+        # Test invalid route ID
+        assert callback_handler.delete(
+            route_id=1234, id_=5678) is False
+
+    def test_get_callbacks(self):
         # Create a route
         route = RouteModel(path=str(uuid.uuid4()))
         db.session.add(route)

@@ -258,8 +258,9 @@ class Test(BaseTest):
         rv = self.client.get('/api/inspect/' + path)
 
         # Call the callback deletion endpoint
-        rv = self.client.get('/api/delete/' + path + '/' +
-                             str(rv.json['callbacks'][0]['id']))
+        rv = self.client.get(
+            '/api/delete/' + path + '/' + str(rv.json['callbacks'][0]['id'])
+        )
         assert 'application/json' in rv.headers['Content-Type']
         assert rv.status_code == 200
         assert rv.json['message'] == 'The webhook has been deleted'

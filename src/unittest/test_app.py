@@ -256,10 +256,11 @@ class Test(BaseTest):
 
         # Call the inspect endpoint
         rv = self.client.get('/api/inspect/' + path)
+        callback_id = rv.json['callbacks'][0]['id']
 
         # Call the callback deletion endpoint
         rv = self.client.get(
-            '/api/delete/' + path + '/' + str(rv.json['callbacks'][0]['id'])
+            '/api/delete/' + path + '/' + str(callback_id)
         )
         assert 'application/json' in rv.headers['Content-Type']
         assert rv.status_code == 200
@@ -267,7 +268,7 @@ class Test(BaseTest):
 
         # We should obtain an error if we call the same route again
         rv = self.client.get(
-            '/api/delete/' + path + '/' + str(rv.json['callbacks'][0]['id'])
+            '/api/delete/' + path + '/' + str(callback_id)
         )
         assert 'application/json' in rv.headers['Content-Type']
         assert rv.status_code == 400

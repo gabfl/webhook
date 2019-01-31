@@ -44,6 +44,3 @@ class CallbackModel(db.Model):
 
     def __repr__(self):
         return '<Callback %r>' % self.id
-
-
-db.create_all()

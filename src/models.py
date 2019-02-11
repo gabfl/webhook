@@ -22,7 +22,7 @@ class RouteModel(db.Model):
     creation_date = db.Column(
         db.DateTime, nullable=False, default=datetime.now, index=True)
     expiration_date = db.Column(
-        db.DateTime, nullable=False, default=parse('in 1 week'), index=True)
+        db.DateTime, nullable=False, default=lambda: parse('in 1 week'), index=True)
 
     def __repr__(self):
         return '<Route %r>' % self.path

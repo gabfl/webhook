@@ -7,8 +7,7 @@ before_install:
   - pip install -r requirements.txt
 script:
   - pycodestyle --exclude=venv --ignore=E501 .
-  - pytest
-  - coverage run --branch --source=. -m unittest discover -bv
+  - coverage run --source=. -m pytest
   - coverage report -m
 after_success:
   - codecov

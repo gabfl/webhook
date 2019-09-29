@@ -59,8 +59,9 @@ class Test(BaseTest):
     def test_inspect(self):
         # Generate a new path
         route = routes_handler.new()
+        path = route.path
 
-        rv = self.client.get('/inspect/' + route.path)
+        rv = self.client.get('/inspect/' + path)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         # There should not be a next page of results
@@ -84,6 +85,7 @@ class Test(BaseTest):
     def test_inspect_with_callbacks_json(self):
         # Generate a new path
         route = routes_handler.new()
+        path = route.path
 
         # Try sending some data to the webhook URL
         self.client.post('/' + route.path, json={
@@ -91,7 +93,7 @@ class Test(BaseTest):
             'find_me': 'looking for this string'
         })
 
-        rv = self.client.get('/inspect/' + route.path)
+        rv = self.client.get('/inspect/' + path)
         assert rv.status_code == 200
         assert b'Current route' in rv.data
         assert b'looking for this string' in rv.data
@@ -135,8 +137,9 @@ class Test(BaseTest):
     def test_api_inspect(self):
         # Generate a new path
         route = routes_handler.new()
+        path = route.path
 
-        rv = self.client.get('/api/inspect/' + route.path)
+        rv = self.client.get('/api/inspect/' + path)
         assert rv.status_code == 200
         assert 'application/json' in rv.headers['Content-Type']
         self.assertIsInstance(rv.json, dict)
@@ -252,7 +255,7 @@ class Test(BaseTest):
         path = route.path
 
         # Generate a callback
-        self.client.get('/' + route.path)
+        self.client.get('/' + path)
 
         # Call the inspect endpoint
         rv = self.client.get('/api/inspect/' + path)
@@ -283,32 +286,36 @@ class Test(BaseTest):
     def test_callback_get(self):
         # Generate a new path
         route = routes_handler.new()
+        path = route.path
 
-        rv = self.client.get('/' + route.path)
+        rv = self.client.get('/' + path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 
     def test_callback_post(self):
         # Generate a new path
         route = routes_handler.new()
+        path = route.path
 
-        rv = self.client.post('/' + route.path)
+        rv = self.client.post('/' + path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 
     def test_callback_put(self):
         # Generate a new path
         route = routes_handler.new()
+        path = route.path
 
-        rv = self.client.put('/' + route.path)
+        rv = self.client.put('/' + path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 
     def test_callback_delete(self):
         # Generate a new path
         route = routes_handler.new()
+        path = route.path
 
-        rv = self.client.delete('/' + route.path)
+        rv = self.client.delete('/' + path)
         assert rv.status_code == 200
         assert rv.data == b'OK'
 

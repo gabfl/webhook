@@ -14,9 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/webhook.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-print(config.webhook_expire)
-print(parse(config.webhook_expire) if config.webhook_expire else None)
-
 
 class RouteModel(db.Model):
     __tablename__ = 'routes'
@@ -26,7 +23,7 @@ class RouteModel(db.Model):
     creation_date = db.Column(
         db.DateTime, nullable=False, default=datetime.now, index=True)
     expiration_date = db.Column(
-        db.DateTime, nullable=False, default=lambda: parse(config.webhook_expire) if config.webhook_expire else None, index=True)
+        db.DateTime, default=lambda: parse(config.webhook_expire) if config.webhook_expire else None, index=True)
 
     def __repr__(self):
         return '<Route %r>' % self.path

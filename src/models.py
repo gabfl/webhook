@@ -6,6 +6,7 @@ from flask import current_app as app
 from flask_sqlalchemy import SQLAlchemy
 
 from .bootstrap import get_or_create_app
+from .config import Config
 
 app = get_or_create_app()
 
@@ -22,7 +23,7 @@ class RouteModel(db.Model):
     creation_date = db.Column(
         db.DateTime, nullable=False, default=datetime.now, index=True)
     expiration_date = db.Column(
-        db.DateTime, nullable=False, default=lambda: parse('in 1 week'), index=True)
+        db.DateTime, default=lambda: parse(Config().webhook_expire) if Config().webhook_expire else None, index=True)
 
     def __repr__(self):
         return '<Route %r>' % self.path

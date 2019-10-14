@@ -7,6 +7,8 @@ from ..config import Config
 class Test(BaseTest):
 
     def test_get_config(self):
+
+        # Load config class
         conf = Config()
 
         assert isinstance(conf.get_config(), configparser.SectionProxy)
@@ -14,17 +16,15 @@ class Test(BaseTest):
     def test_get_config_2(self):
         # Test with non-existing config file
 
+        # Load config class
         conf = Config()
 
-        #old_path = config.config_path
         conf.config_path = '/dev/null/void'
         assert conf.get_config() is None
 
-        # Restore path
-        #config.config_path = old_path
-
     def test_getattr(self):
 
+        # Load config class
         conf = Config()
 
         assert isinstance(conf.webhook_expire, str)
@@ -33,12 +33,10 @@ class Test(BaseTest):
     def test_getattr_2(self):
         # Test getting a value with a non-existing config file
 
-        #old_path = config.config_path
+        # Load config class
         conf = Config()
 
+        # Set invalid path
         conf.config_path = '/dev/null/void'
 
         assert conf.webhook_expire is None
-
-        # Restore path
-       # config.config_path = old_path

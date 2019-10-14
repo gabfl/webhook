@@ -326,6 +326,6 @@ class Test(BaseTest):
         assert b'You should be redirected automatically' in rv.data
         assert b'/404' in rv.data
 
-    def test_abort_404_2(self):
+    def test_abort_404(self):
         rv = self.client.get('/404')
         assert rv.status_code == 404

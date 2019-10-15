@@ -31,6 +31,5 @@ And the result will be available on `/3989c985-0659-4c2d-b38f-9d83d74fe0bb/inspe
 ```bash
 $ cd webhook/
 $ pip3 install -r requirements.txt
-$ python3 -m src.setup
 $ python3 -m src
 ```

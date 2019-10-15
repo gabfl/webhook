@@ -22,6 +22,18 @@ class Test(BaseTest):
     def test_db(self):
         self.assertIsInstance(models.db, SQLAlchemy)
 
+    def test_db_auto_create(self):
+        # The db should exist and the method is expected to return False
+        assert models.db_auto_create() is False
+
+    def test_db_auto_create_2(self):
+        # Drop test table to force a db re-creation
+        models.RouteModel.__table__.drop(models.db.engine)
+        models.CallbackModel.__table__.drop(models.db.engine)
+
+        # The db will be created and the method is expected to return True
+        assert models.db_auto_create() is True
+
     def test_RouteModel(self):
         self.route = models.RouteModel(path=str(uuid.uuid4()))
         models.db.session.add(self.route)

@@ -3,7 +3,7 @@ from dateparser import parse
 
 from flask import Flask
 from flask import current_app as app
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, sqlalchemy
 
 from .bootstrap import get_or_create_app
 from .config import Config
@@ -13,6 +13,21 @@ app = get_or_create_app()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/webhook.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+
+def db_auto_create():
+    """ Automatically create SQLite db if it does not exists """
+
+    try:
+        RouteModel.query.get(1)
+
+        # Database already exists
+        return False
+    except sqlalchemy.exc.OperationalError:
+        db.create_all()
+
+    # Database has been created
+    return True
 
 
 class RouteModel(db.Model):
@@ -45,3 +60,6 @@ class CallbackModel(db.Model):
 
     def __repr__(self):
         return '<Callback %r>' % self.id
+
+
+db_auto_create()

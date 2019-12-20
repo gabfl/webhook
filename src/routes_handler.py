@@ -1,8 +1,6 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import or_
-
 from .models import db, RouteModel, CallbackModel
 
 
@@ -21,8 +19,8 @@ def cleanup_old_routes():
     """ Delete expired routes """
 
     # Load routes
-    routes = RouteModel.query.filter(or_(
-        RouteModel.expiration_date < datetime.now(), RouteModel.expiration_date.is_(None))).all()
+    routes = RouteModel.query.filter(
+        RouteModel.expiration_date < datetime.now(), RouteModel.expiration_date.isnot(None)).all()
 
     for route in routes:
         delete(route)

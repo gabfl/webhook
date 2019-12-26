@@ -127,6 +127,19 @@ class Test(BaseTest):
         assert b'Current route' in rv.data
         assert b'looking+for+this+string' in rv.data
 
+    def test_inspect_rename(self):
+        # Generate a new path
+        route = routes_handler.new()
+        path = route.path
+
+        # Try sending some data to the webhook URL
+        rv = self.client.post('/inspect/' + path, data=dict(
+            set_name='New route name'
+        ))
+
+        assert rv.status_code == 200
+        assert b'New route name' in rv.data
+
     def test_inspect_invalid(self):
         rv = self.client.get('/inspect/some_bad_route')
         # Should be a 307 to redirect to 404

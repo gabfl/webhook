@@ -9,7 +9,7 @@
 
 <form method="POST" action="/inspect/{{ route_path }}">
     <div class="input-group mb-3">
-        <input type="text" name="set_name" class="form-control" placeholder="{{ name_default }}" value="{{ name }}" aria-label="Webhook name" aria-describedby="button-addon2">
+        <input type="text" name="set_name" class="form-control" placeholder="{{ name_default }}" value="{{ name }}" aria-label="Webhook name" aria-describedby="button-addon2" maxlength="255">
         <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Rename</button>
         </div>

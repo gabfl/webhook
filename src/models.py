@@ -35,6 +35,7 @@ class RouteModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    name = db.Column(db.String(255))
     creation_date = db.Column(
         db.DateTime, nullable=False, default=datetime.now, index=True)
     expiration_date = db.Column(

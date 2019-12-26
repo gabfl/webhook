@@ -75,7 +75,7 @@ def delete_route_json(route_path):
     })
 
 
-@app.route('/inspect/<string:route_path>', methods=['GET'])
+@app.route('/inspect/<string:route_path>', methods=['GET', 'POST'])
 def inspect(route_path):
     # Lookup route
     route = RouteModel.query.filter_by(path=route_path).first()
@@ -83,6 +83,10 @@ def inspect(route_path):
     # Return 404 if unknown route
     if not route:
         return redirect(url_for('abort_404')), 307
+
+    # Rename route
+    if request.method == 'POST' and request.form.get('set_name'):
+        routes_handler.rename(route, request.form['set_name'])
 
     # Get callbacks
     callbacks = callback_handler.get_callbacks(
@@ -93,7 +97,10 @@ def inspect(route_path):
         route_path=route_path,
         callbacks=callbacks,
         cursor=callback_handler.get_cursor(callbacks),
-        host_url=request.host_url
+        host_url=request.host_url,
+        name=route.name or '',
+        name_default='Route created on %s' % (
+            (route.creation_date).strftime("%A %B %d, %Y at %H:%M:%S")),
     )
 
 

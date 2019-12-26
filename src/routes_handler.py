@@ -21,7 +21,7 @@ def rename(route, name):
     if not name:
         return None
 
-    # Delete callbacks
+    # Rename the route
     route.name = name
 
     # Commit

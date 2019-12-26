@@ -140,6 +140,7 @@ def inspect_json(route_path):
         'callbacks': callbacks,
         'creation_date': route.creation_date,
         'expiration_date': route.expiration_date,
+        'name': route.name,
         'next': request.host_url + 'api/inspect/' + route_path + '?cursor=' + str(cursor) if cursor else None
     })
 

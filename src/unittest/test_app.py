@@ -155,6 +155,7 @@ class Test(BaseTest):
         self.assertIsInstance(rv.json['routes']['webhook'], str)
         self.assertIsInstance(rv.json['creation_date'], str)
         self.assertIsInstance(rv.json['expiration_date'], str)
+        self.assertIsNone(rv.json['name'], None)
         self.assertIsNone(rv.json['next'])
 
     def test_api_inspect_cursor(self):

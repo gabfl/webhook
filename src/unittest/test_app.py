@@ -132,7 +132,7 @@ class Test(BaseTest):
         route = routes_handler.new()
         path = route.path
 
-        # Try sending some data to the webhook URL
+        # Sending a POST with a new webhook name
         rv = self.client.post('/inspect/' + path, data=dict(
             set_name='New route name'
         ))

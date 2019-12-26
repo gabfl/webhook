@@ -15,6 +15,19 @@ def new():
     return route
 
 
+def rename(route, name):
+    """ Rename a route """
+
+    if not name:
+        return None
+
+    # Rename the route
+    route.name = name
+
+    # Commit
+    db.session.commit()
+
+
 def cleanup_old_routes():
     """ Delete expired routes """
 

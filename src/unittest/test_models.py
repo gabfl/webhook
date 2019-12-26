@@ -44,6 +44,7 @@ class Test(BaseTest):
         self.assertIsInstance(self.route.path, str)
         self.assertIsInstance(self.route.creation_date, datetime)
         self.assertIsInstance(self.route.expiration_date, datetime)
+        self.assertIsNone(self.route.name)
 
     def test_RouteModel_repr(self):
         self.route = models.RouteModel(path=str(uuid.uuid4()))

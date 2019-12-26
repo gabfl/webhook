@@ -38,6 +38,20 @@ class Test(BaseTest):
         self.assertIsInstance(route.path, str)
         assert len(route.path) == 36
 
+    def test_rename(self):
+        route = routes_handler.new()
+
+        # Default name should be None
+        assert route.name is None
+
+        # Rename route with empty name
+        routes_handler.rename(route, '')
+        assert route.name is None
+
+        # Rename route with a valid name
+        routes_handler.rename(route, 'New route name')
+        assert route.name == 'New route name'
+
     def test_cleanup_old_routes(self):
         # Create 2 routes, one expired
         self.route_1 = RouteModel(path=str(uuid.uuid4()), )

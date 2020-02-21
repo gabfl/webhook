@@ -7,7 +7,7 @@ webhook_host = 'https://webhook.link/'
 def new_route():
     """ Create a new route, get webhook URL """
 
-    r = requests.get('https://webhook.link/api/new')
+    r = requests.get(webhook_host + 'api/new')
 
     if r.status_code != 200:
         raise RuntimeError(

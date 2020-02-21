@@ -67,25 +67,25 @@ For each callback, `process_callback()` is called and you can edit this method t
 Example:
 
 ```bash
-python3 inspect_loop.py --inspect https://webhook.link//api/inspect/****
+python3 inspect_loop.py --inspect https://webhook.link/api/inspect/****
 # **** Payload ID 126,094 ****
 # Payload number: 1
 # Method POST on Mon, 06 Jan 2020 12:20:05 GMT
 # 5 headers
 # Body -> {'fail': False, 'user_id': 1234}
-
+#
 # **** Payload ID 126,093 ****
 # Payload number: 2
 # Method POST on Mon, 06 Jan 2020 12:20:08 GMT
 # 5 headers
 # Body -> {'fail': False, 'user_id': 1234}
-
+#
 # **** Payload ID 126,092 ****
 # Payload number: 3
 # Method POST on Mon, 06 Jan 2020 12:20:12 GMT
 # 5 headers
 # Body -> {'fail': False, 'user_id': 1234}
-
+#
 # **** Payload ID 126,091 ****
 # Payload number: 4
 # Method POST on Mon, 06 Jan 2020 12:20:18 GMT

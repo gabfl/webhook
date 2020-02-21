@@ -32,7 +32,7 @@ def read_stdin():
 
 
 def call_webhook(route, body):
-    """ Post a body to a webhook """
+    """ Post a payload to a webhook """
 
     r = requests.post(route, data=body)
 
@@ -46,4 +46,4 @@ call_webhook(route, read_stdin())
 
 print('OK')
 print('Consume this data with:')
-print('python3 consume.py -i %s' % (inspect))
+print('  python3 consume.py -i %s' % (inspect))

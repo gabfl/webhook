@@ -14,18 +14,18 @@ parser.add_argument("-o", "--out",
 parser.add_argument("-f", "--destination_file",
                     help="CSV destination file", default='/tmp/consumed.txt')
 parser.add_argument("-p", "--open",
-                    help="Open file with a MacOS program")
+                    help="Open file with a program")
 args = parser.parse_args()
 
 
 def read_body():
-    """ Read body sent t webhook """
+    """ Read body from first webhook """
 
     r = requests.get(args.inspect)
 
     if r.status_code != 200:
         raise RuntimeError(
-            'Failed to create webhook. Error %d.' % (r.status_code))
+            'Failed to read inspect API. Error %d.' % (r.status_code))
 
     return r.json()['callbacks'][0]['body']['data']
 

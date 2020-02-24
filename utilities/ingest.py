@@ -2,6 +2,7 @@ import sys
 import requests
 
 webhook_host = 'https://webhook.link/'
+consume_filename = 'consume.py'
 
 
 def new_route():
@@ -21,7 +22,7 @@ def read_stdin():
 
     if sys.stdin.isatty():
         print('Usage:')
-        print('  some_command | python3 ingest.py')
+        print('  some_command | python3 %s' % (__file__))
         sys.exit()
 
     stdin = ''
@@ -34,7 +35,15 @@ def read_stdin():
 def call_webhook(route, body):
     """ Post a payload to a webhook """
 
-    r = requests.post(route, data=body)
+    r = requests.post(
+        route,
+        data=body,
+        headers={
+            "content-type": "text",
+            "X-Origin": __file__,
+            "X-Origin-Version": "1.0",
+        }
+    )
 
     if r.status_code != 200:
         raise RuntimeError(
@@ -46,4 +55,4 @@ call_webhook(route, read_stdin())
 
 print('OK')
 print('Consume this data with:')
-print('  python3 consume.py -i %s' % (inspect))
+print('  python3 %s -i %s' % (consume_filename, inspect))

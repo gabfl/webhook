@@ -4,6 +4,11 @@ from subprocess import call
 
 import argparse
 
+ingest_filename = 'ingest.py'
+
+# Compatible versions of ingest.py
+ingest_compatible_versions = ['1.0']
+
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--inspect", type=str, help="Webhook Inspect API URL",
@@ -27,7 +32,15 @@ def read_body():
         raise RuntimeError(
             'Failed to read inspect API. Error %d.' % (r.status_code))
 
-    return r.json()['callbacks'][0]['body']['data']
+    # Get first callback
+    callback = r.json()['callbacks'][0]
+
+    x_origin_version = callback['headers'].get('X-Origin-Version', '1.0')
+    if x_origin_version not in ingest_compatible_versions:
+        raise RuntimeError(
+            'This payload was ingested with %s v%s.\nPlease a compatible version of %s.' % (ingest_filename, x_origin_version, __file__))
+
+    return callback['body']['data']
 
 
 def output(output):

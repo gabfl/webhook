@@ -32,7 +32,7 @@ curl -X POST {{ host_url }}{{ route_path }} \
         {% set rowloop = loop %}
 
         <div class="border border table-responsive" style="padding: 6px; margin-bottom: 4px;">
-            <h5>{{ callback.date.strftime('%B %d, %Y %I:%M:%S %p') }}</h5>
+            <h5>{{ callback.date | strftime }}</h5>
 
             <div style="text-align: right;">
                 <a href="/api/delete/{{ route_path }}/{{ callback.id }}" target="_blank" onclick="return confirm('Confirm callback deletion?');"><button type="button" class="btn btn-danger btn-secondary btn-sm">Delete (Json)</button></a>
@@ -46,7 +46,7 @@ curl -X POST {{ host_url }}{{ route_path }} \
                         </tr>
                         <tr>
                             <td>Date</td>
-                            <td>{{ callback.date.strftime('%B %d, %Y %I:%M:%S %p') }}</td>
+                            <td>{{ callback.date | strftime }}</td>
                         </tr>
                         {% if callback.referrer %}
                             <tr>

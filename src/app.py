@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import timezone
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 
@@ -10,6 +11,19 @@ from .models import db, RouteModel, CallbackModel
 
 
 app = get_or_create_app()
+
+
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date, fmt=None):
+    """
+        Custom Jinja filter to convert UTC date to local TZ
+        and return it formatted
+    """
+
+    # Convert UTC to local TZ
+    date = date.replace(tzinfo=timezone.utc).astimezone(tz=None)
+
+    return date.strftime(fmt) if fmt else date.strftime('%B %d, %Y %I:%M:%S %p')
 
 
 @app.route("/")
@@ -100,7 +114,7 @@ def inspect(route_path):
         host_url=request.host_url,
         name=route.name or '',
         name_default='Route created on %s' % (
-            (route.creation_date).strftime("%A %B %d, %Y at %H:%M:%S")),
+            (route.creation_date.replace(tzinfo=timezone.utc).astimezone(tz=None)).strftime("%A %B %d, %Y at %I:%M:%S %p")),
     )
 
 

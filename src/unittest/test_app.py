@@ -1,9 +1,32 @@
 
+from datetime import datetime
+
 from .base import BaseTest
 from .. import app, bootstrap, routes_handler
 
 
 class Test(BaseTest):
+
+    def test__jinja2_filter_datetime(self):
+        """
+            Test Jinja custom filter that converts a date
+            from UTC to local TZ and returns output as a str
+        """
+
+        dt = datetime(2020, 2, 26, 19, 42, 23, 824725)
+        assert app._jinja2_filter_datetime(
+            dt) == 'February 26, 2020 02:42:23 PM'
+
+    def test__jinja2_filter_datetime_2(self):
+        """
+            Test Jinja custom filter that converts a date
+            from UTC to local TZ and returns output as a str
+            with a custom formt
+        """
+
+        dt = datetime(2020, 2, 26, 19, 42, 23, 824725)
+        assert app._jinja2_filter_datetime(
+            dt, fmt='%B %d, %Y') == 'February 26, 2020'
 
     def test_hp(self):
         rv = self.client.get('/')

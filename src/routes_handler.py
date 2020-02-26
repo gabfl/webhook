@@ -33,7 +33,7 @@ def cleanup_old_routes():
 
     # Load routes
     routes = RouteModel.query.filter(
-        RouteModel.expiration_date < datetime.now(), RouteModel.expiration_date.isnot(None)).all()
+        RouteModel.expiration_date < datetime.utcnow(), RouteModel.expiration_date.isnot(None)).all()
 
     for route in routes:
         delete(route)

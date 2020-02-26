@@ -21,7 +21,7 @@ class Test(BaseTest):
         """
             Test Jinja custom filter that converts a date
             from UTC to local TZ and returns output as a str
-            with a custom formt
+            with a custom format
         """
 
         dt = datetime(2020, 2, 26, 19, 42, 23, 824725)

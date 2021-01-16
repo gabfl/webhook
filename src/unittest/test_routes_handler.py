@@ -97,6 +97,11 @@ class Test(BaseTest):
         self.assertIsInstance(callbacks, list)
         assert len(callbacks) == 0
 
+        # unset deleted routes
+        self.route_2 = None
+        self.route_2_callback_1 = None
+        self.route_2_callback_2 = None
+
     def test_delete(self):
 
         # Create 2 routes, one expired

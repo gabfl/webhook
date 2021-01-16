@@ -1,8 +1,8 @@
 # webhook
 
-[![Build Status](https://travis-ci.org/gabfl/webhook.svg?branch=master)](https://travis-ci.org/gabfl/webhook)
-[![codecov](https://codecov.io/gh/gabfl/webhook/branch/master/graph/badge.svg)](https://codecov.io/gh/gabfl/webhook)
-[![MIT licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://raw.githubusercontent.com/gabfl/webhook/master/LICENSE)
+[![Build Status](https://travis-ci.org/gabfl/webhook.svg?branch=main)](https://travis-ci.org/gabfl/webhook)
+[![codecov](https://codecov.io/gh/gabfl/webhook/branch/main/graph/badge.svg)](https://codecov.io/gh/gabfl/webhook)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://raw.githubusercontent.com/gabfl/webhook/main/LICENSE)
 
 Webhook is an open source project available at [https://webhook.link](https://webhook.link).
 

@@ -18,6 +18,10 @@ jobs:
           architecture: x64
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
+      - name: Setup timezone
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: EST
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -26,7 +30,6 @@ jobs:
           pip install -r requirements.txt
       - name: Run pycodestyle
         run: |
-          export TZ=EST
           pycodestyle --exclude=venv --ignore=E501 .
       - name: Run pytest
         run: |

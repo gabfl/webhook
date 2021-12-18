@@ -10,7 +10,7 @@ It allows you to easily test webhooks and other HTTP requests and log their attr
 
 ## Usage example
 
-This projects generates random ephemerous routes like `/3989c985-0659-4c2d-b38f-9d83d74fe0bb`.
+This projects generates random ephemeral routes like `/3989c985-0659-4c2d-b38f-9d83d74fe0bb`.
 
 You can send any HTTP request to the route, for example:
 

@@ -23,7 +23,7 @@ jobs:
           export TZ=EST
           sudo apt-get update
           pip install -U pip
-          pip install pycodestyle codecov
+          pip install pycodestyle codecov pytest
           pip install -r requirements.txt
       - name: Run pycodestyle
         run: |

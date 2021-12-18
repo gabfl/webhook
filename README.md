@@ -1,6 +1,6 @@
 # webhook
 
-[![Build Status](https://travis-ci.org/gabfl/webhook.svg?branch=main)](https://travis-ci.org/gabfl/webhook)
+[![Build Status](https://github.com/gabfl/webhook/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gabfl/webhook/actions)
 [![codecov](https://codecov.io/gh/gabfl/webhook/branch/main/graph/badge.svg)](https://codecov.io/gh/gabfl/webhook)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://raw.githubusercontent.com/gabfl/webhook/main/LICENSE)
 

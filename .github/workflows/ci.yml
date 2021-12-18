@@ -20,13 +20,13 @@ jobs:
         run: python -c "import sys; print(sys.version)"
       - name: Install dependencies
         run: |
-          export TZ=EST
           sudo apt-get update
           pip install -U pip
           pip install pycodestyle codecov pytest
           pip install -r requirements.txt
       - name: Run pycodestyle
         run: |
+          export TZ=EST
           pycodestyle --exclude=venv --ignore=E501 .
       - name: Run pytest
         run: |

@@ -202,7 +202,7 @@ def callback(route_path):
     callback_handler.save(route.id)
 
     # Eventually cleanup old callbacks
-    cleanup_old_callbacks()
+    callback_handler.cleanup_old_callbacks()
 
     return 'OK'
 

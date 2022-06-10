@@ -51,13 +51,13 @@ def cleanup_old_callbacks():
     """ Delete expired callbacks """
 
     # Get desired expiration
-    callback_expire = Config().callback_expire
+    delete_callback_older_than = Config().delete_callback_older_than
 
-    if not callback_expire:
+    if not delete_callback_older_than:
         return None
 
     # Parse expiration date
-    dt = parse(callback_expire, settings={'TIMEZONE': 'UTC'})
+    dt = parse(delete_callback_older_than, settings={'TIMEZONE': 'UTC'})
 
     # Load callbacks (limit 50 to avoid slow HTTP responses)
     callbacks = CallbackModel.query.filter(

@@ -28,7 +28,7 @@ class Test(BaseTest):
         conf = Config()
 
         assert isinstance(conf.webhook_expire, str)
-        assert isinstance(conf.callback_expire, str)
+        assert isinstance(conf.delete_callback_older_than, str)
         assert conf.non_existant is None
 
     def test_getattr_2(self):
@@ -41,4 +41,4 @@ class Test(BaseTest):
         conf.config_path = '/dev/null/void'
 
         assert conf.webhook_expire is None
-        assert conf.callback_expire is None
+        assert conf.delete_callback_older_than is None

@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import timezone
+from urllib.parse import urlparse
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 
@@ -28,7 +29,11 @@ def _jinja2_filter_datetime(date, fmt=None):
 
 @app.route("/")
 def hp():
-    return render_template('index.html', host_url=request.host_url)
+    return render_template(
+        'index.html',
+        host_url=request.host_url,
+        host_name=urlparse(request.host_url).netloc
+    )
 
 
 @app.route("/robots.txt")
@@ -112,6 +117,7 @@ def inspect(route_path):
         callbacks=callbacks,
         cursor=callback_handler.get_cursor(callbacks),
         host_url=request.host_url,
+        host_name=urlparse(request.host_url).netloc,
         name=route.name or '',
         name_default='Route created on %s' % (
             (route.creation_date.replace(tzinfo=timezone.utc).astimezone(tz=None)).strftime("%A %B %d, %Y at %I:%M:%S %p")),
@@ -200,4 +206,4 @@ def callback(route_path):
 
 @app.route("/404")
 def abort_404():
-    return render_template('404.html'), 404
+    return render_template('404.html', host_name=urlparse(request.host_url).netloc), 404

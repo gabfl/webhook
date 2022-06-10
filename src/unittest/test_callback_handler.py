@@ -1,5 +1,7 @@
 import uuid
 
+from dateparser import parse
+
 from .base import BaseTest
 from .. import callback_handler
 from ..models import db, RouteModel, CallbackModel
@@ -7,10 +9,50 @@ from ..models import db, RouteModel, CallbackModel
 
 class Test(BaseTest):
 
+    route = None
+    callback_1 = None
+    callback_2 = None
+    callback_3 = None
+    callback_4 = None
+
     def tearDown(self):
         RouteModel.query.delete()
         CallbackModel.query.delete()
         db.session.commit()
+
+    def cleanup_old_callbacks(self):
+        # Create 1 route
+        self.route = RouteModel(path=str(uuid.uuid4()), )
+        db.session.add(self.route)
+
+        db.session.commit()
+
+        # Add some callback rows
+        self.callback_1 = CallbackModel(
+            route_id=self.route.id, date=parse('3 month ago'))
+        db.session.add(self.callback_1)
+        self.callback_2 = CallbackModel(
+            route_id=self.route.id, date=parse('2 month ago'))
+        db.session.add(self.callback_2)
+        self.callback_3 = CallbackModel(
+            route_id=self.route.id, date=parse('1 week ago'))
+        db.session.add(self.callback_3)
+        self.callback_4 = CallbackModel(
+            route_id=self.route.id, date=parse('now'))
+        db.session.add(self.callback_4)
+
+        db.session.commit()
+
+        # Call cleanup method
+        callback_handler.cleanup_old_callbacks()
+
+        # We should have 2 callbacks left our of 4
+        callbacks = CallbackModel.query.filter_by(
+            route_id=self.route.id).all()
+        self.assertIsInstance(callbacks, list)
+        assert len(callbacks) == 2
+        for callback in callbacks:
+            self.assertIsInstance(callback, CallbackModel)
 
     def test_delete(self):
         # Create a route

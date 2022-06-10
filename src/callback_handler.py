@@ -1,9 +1,11 @@
 import json
 
 from flask import request
+from dateparser import parse
 
 from .bootstrap import get_or_create_app
 from .models import db, CallbackModel
+from .config import Config
 
 
 app = get_or_create_app()
@@ -43,6 +45,26 @@ def save(route_id):
     db.session.commit()
 
     return True
+
+
+def cleanup_old_callbacks():
+    """ Delete expired callbacks """
+
+    # Get desired expiration
+    callback_expire = Config().callback_expire
+
+    if not callback_expire:
+        return None
+
+    # Parse expiration date
+    dt = parse(callback_expire, settings={'TIMEZONE': 'UTC'})
+
+    # Load callbacks (limit 50 to avoid slow HTTP responses)
+    callbacks = CallbackModel.query.filter(
+        CallbackModel.date < dt).limit(50).all()
+
+    for callback in callbacks:
+        delete(callback)
 
 
 def delete(route_id, id_):

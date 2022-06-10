@@ -64,7 +64,11 @@ def cleanup_old_callbacks():
         CallbackModel.date < dt).limit(50).all()
 
     for callback in callbacks:
-        delete(callback)
+        # Delete callback
+        db.session.delete(callback)
+
+    # Commit
+    db.session.commit()
 
 
 def delete(route_id, id_):

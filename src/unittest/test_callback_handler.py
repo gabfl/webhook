@@ -12,10 +12,6 @@ from ..config import Config
 class Test(BaseTest):
 
     route = None
-    callback_1 = None
-    callback_2 = None
-    callback_3 = None
-    callback_4 = None
 
     def tearDown(self):
         RouteModel.query.delete()
@@ -32,18 +28,18 @@ class Test(BaseTest):
         db.session.commit()
 
         # Add some callback rows
-        self.callback_1 = CallbackModel(
+        callback_1 = CallbackModel(
             route_id=self.route.id, date=parse('3 month ago'))
-        db.session.add(self.callback_1)
-        self.callback_2 = CallbackModel(
+        db.session.add(callback_1)
+        callback_2 = CallbackModel(
             route_id=self.route.id, date=parse('2 month ago'))
-        db.session.add(self.callback_2)
-        self.callback_3 = CallbackModel(
+        db.session.add(callback_2)
+        callback_3 = CallbackModel(
             route_id=self.route.id, date=parse('1 week ago'))
-        db.session.add(self.callback_3)
-        self.callback_4 = CallbackModel(
+        db.session.add(callback_3)
+        callback_4 = CallbackModel(
             route_id=self.route.id, date=parse('now'))
-        db.session.add(self.callback_4)
+        db.session.add(callback_4)
 
         db.session.commit()
 

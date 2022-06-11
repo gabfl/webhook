@@ -1,10 +1,12 @@
 import uuid
+from unittest.mock import patch
 
 from dateparser import parse
 
 from .base import BaseTest
 from .. import callback_handler
 from ..models import db, RouteModel, CallbackModel
+from ..config import Config
 
 
 class Test(BaseTest):
@@ -20,7 +22,9 @@ class Test(BaseTest):
         CallbackModel.query.delete()
         db.session.commit()
 
-    def cleanup_old_callbacks(self):
+    def add_cleanup_callbacks(self):
+        """ Add a route and some callbacks for cleanup tests """
+
         # Create 1 route
         self.route = RouteModel(path=str(uuid.uuid4()), )
         db.session.add(self.route)
@@ -43,6 +47,9 @@ class Test(BaseTest):
 
         db.session.commit()
 
+    def test_cleanup_old_callbacks(self):
+        self.add_cleanup_callbacks()
+
         # Call cleanup method
         callback_handler.cleanup_old_callbacks()
 
@@ -53,6 +60,22 @@ class Test(BaseTest):
         assert len(callbacks) == 2
         for callback in callbacks:
             self.assertIsInstance(callback, CallbackModel)
+
+    def test_cleanup_old_callbacks_no_config(self):
+        # Test with a blank config, nothing should be deleted
+        with patch.object(Config, "config_path", ''):
+            self.add_cleanup_callbacks()
+
+            # Call cleanup method
+            callback_handler.cleanup_old_callbacks()
+
+            # We should have 2 callbacks left our of 4
+            callbacks = CallbackModel.query.filter_by(
+                route_id=self.route.id).all()
+            self.assertIsInstance(callbacks, list)
+            assert len(callbacks) == 4
+            for callback in callbacks:
+                self.assertIsInstance(callback, CallbackModel)
 
     def test_delete(self):
         # Create a route

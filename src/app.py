@@ -201,6 +201,9 @@ def callback(route_path):
     # Save callback
     callback_handler.save(route.id)
 
+    # Eventually cleanup old callbacks
+    callback_handler.cleanup_old_callbacks()
+
     return 'OK'
 
 

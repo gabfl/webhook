@@ -1,16 +1,77 @@
 import uuid
+from unittest.mock import patch
+
+from dateparser import parse
 
 from .base import BaseTest
 from .. import callback_handler
 from ..models import db, RouteModel, CallbackModel
+from ..config import Config
 
 
 class Test(BaseTest):
+
+    route = None
 
     def tearDown(self):
         RouteModel.query.delete()
         CallbackModel.query.delete()
         db.session.commit()
+
+    def add_cleanup_callbacks(self):
+        """ Add a route and some callbacks for cleanup tests """
+
+        # Create 1 route
+        self.route = RouteModel(path=str(uuid.uuid4()), )
+        db.session.add(self.route)
+
+        db.session.commit()
+
+        # Add some callback rows
+        callback_1 = CallbackModel(
+            route_id=self.route.id, date=parse('3 month ago'))
+        db.session.add(callback_1)
+        callback_2 = CallbackModel(
+            route_id=self.route.id, date=parse('2 month ago'))
+        db.session.add(callback_2)
+        callback_3 = CallbackModel(
+            route_id=self.route.id, date=parse('1 week ago'))
+        db.session.add(callback_3)
+        callback_4 = CallbackModel(
+            route_id=self.route.id, date=parse('now'))
+        db.session.add(callback_4)
+
+        db.session.commit()
+
+    def test_cleanup_old_callbacks(self):
+        self.add_cleanup_callbacks()
+
+        # Call cleanup method
+        callback_handler.cleanup_old_callbacks()
+
+        # We should have 2 callbacks left our of 4
+        callbacks = CallbackModel.query.filter_by(
+            route_id=self.route.id).all()
+        self.assertIsInstance(callbacks, list)
+        assert len(callbacks) == 2
+        for callback in callbacks:
+            self.assertIsInstance(callback, CallbackModel)
+
+    def test_cleanup_old_callbacks_no_config(self):
+        # Test with a blank config, nothing should be deleted
+        with patch.object(Config, "config_path", ''):
+            self.add_cleanup_callbacks()
+
+            # Call cleanup method
+            callback_handler.cleanup_old_callbacks()
+
+            # We should have 2 callbacks left our of 4
+            callbacks = CallbackModel.query.filter_by(
+                route_id=self.route.id).all()
+            self.assertIsInstance(callbacks, list)
+            assert len(callbacks) == 4
+            for callback in callbacks:
+                self.assertIsInstance(callback, CallbackModel)
 
     def test_delete(self):
         # Create a route

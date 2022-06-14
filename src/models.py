@@ -55,7 +55,7 @@ class CallbackModel(db.Model):
     args = db.Column(db.Text())
     body = db.Column(db.Text())
     date = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow)
+        db.DateTime, nullable=False, default=datetime.utcnow, index=True)
     referrer = db.Column(db.Text())
     remote_addr = db.Column(db.String(256))
 

@@ -21,7 +21,7 @@ curl -X POST https://webhook.link/3989c985-0659-4c2d-b38f-9d83d74fe0bb \
 -d '{"hello": "world", "is_true": true}'
 ```
 
-And the result will be available on `/3989c985-0659-4c2d-b38f-9d83d74fe0bb/inspect`:
+And the result will be available on `/inspect/3989c985-0659-4c2d-b38f-9d83d74fe0bb`:
 
 ![Demo](img/screenshot.png?raw=true)
 
@@ -33,3 +33,8 @@ $ cd webhook/
 $ pip3 install -r requirements.txt
 $ python3 -m src
 ```
+
+## Try it out in docker
+* Build the image: `docker build webhook:latest .`
+* Run the image: `docker run -it --rm -p 5000:5000 webhook:latest`
+* [Open in browser](http://localhost:5000)

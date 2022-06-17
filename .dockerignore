@@ -1,0 +1,11 @@
+.git
+.github
+.*
+img
+socket
+src/unittest
+utilities
+uwsgi
+app.ini
+venv
+Dockerfile

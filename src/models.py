@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from dateparser import parse
 
@@ -11,7 +12,8 @@ from .config import Config
 
 app = get_or_create_app()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/webhook.db'
+file_path = os.path.abspath(os.getcwd()) + "/src/data/webhook.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + file_path
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

@@ -3,7 +3,8 @@ from dateparser import parse
 
 from flask import Flask
 from flask import current_app as app
-from flask_sqlalchemy import SQLAlchemy, sqlalchemy
+from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
 
 from .bootstrap import get_or_create_app
 from .config import Config

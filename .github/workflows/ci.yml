@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo apt-get update
           pip install -U pip
-          pip install pycodestyle codecov pytest
+          pip install pycodestyle coverage pytest
           pip install -r requirements.txt
       - name: Run pycodestyle
         run: |
@@ -34,9 +34,11 @@ jobs:
       - name: Run pytest
         run: |
           coverage run --source=. -m pytest
-      - name: Generate coverage report
+      - name: Upload coverage reports to Codecov
         run: |
-          coverage report -m
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -t ${CODECOV_TOKEN}
       - name: Report to codecov
         run: |
           codecov

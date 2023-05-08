@@ -34,11 +34,11 @@ jobs:
       - name: Run pytest
         run: |
           coverage run --source=. -m pytest
+      - name: Generate coverage report
+        run: |
+          coverage report -m
       - name: Upload coverage reports to Codecov
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
           ./codecov -t ${CODECOV_TOKEN}
-      - name: Report to codecov
-        run: |
-          codecov
